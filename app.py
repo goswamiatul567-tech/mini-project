@@ -17,6 +17,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def landing():
     return render_template("index.html")
 
+@app.route("/how-it-works")
+def how_it_works():
+    return render_template("how_it_works.html")
+
 @app.route("/dashboard")
 def dashboard():
     records = get_records()
@@ -49,19 +53,12 @@ def export_csv():
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
     conn.close()
-
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(["ID", "Date/Time", "Class", "Section", "Attendance", "Students Detected", "Plates Detected", "Status"])
-    
     for row in rows:
         writer.writerow([row["id"], row["timestamp"], row["class_name"], row["section"], row["attendance"], row["students"], row["plates"], row["status"]])
-
-    return Response(
-        output.getvalue(),
-        mimetype="text/csv",
-        headers={"Content-Disposition": "attachment; filename=MealTrack_Audit_Records.csv"}
-    )
+    return Response(output.getvalue(), mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=MealTrack_Audit_Records.csv"})
 
 @app.route("/upload", methods=["POST"])
 def upload():

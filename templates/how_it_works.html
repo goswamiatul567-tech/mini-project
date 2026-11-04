@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works | MealTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --success: #10b981; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 50px; }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } }
+
+        /* Presentation Layout */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .slide { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.5s ease-in-out; }
+        
+        .slide-number { font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .slide h2 { font-size: 28px; margin-bottom: 20px; color: white; }
+        .slide p { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
+        
+        .highlight-box { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+        .highlight-box p { color: var(--text-main); margin: 0; font-weight: 500; }
+
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .tech-tag { background: var(--bg-card); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">🍲 MealTrack</a>
+        <div class="nav-links">
+            <a href="/">HOME</a>
+            <a href="/how-it-works" class="active">HOW IT WORKS</a>
+            <a href="#about">ABOUT</a>
+            <a href="mailto:contact@mealtrack.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Slide 1 -->
+        <div class="slide">
+            <div class="slide-number">Slide 01</div>
+            <h2>The Problem: Corruption & Wastage</h2>
+            <p>In the traditional Mid-Day Meal system, monitoring relies on manual paper records. This leads to critical issues:</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin-left: 20px;">
+                <li><strong>Ghost Beneficiaries:</strong> Fake attendance records lead to funds being stolen.</li>
+                <li><strong>Food Wastage:</strong> Inaccurate headcounts result in food shortages or excess waste.</li>
+                <li><strong>No Verification:</strong> Authorities have no way to prove if a meal was actually served.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <div class="slide-number">Slide 02</div>
+            <h2>Our Solution: AI Vision</h2>
+            <p>We replace manual counting with real-time Artificial Intelligence.</p>
+            <div class="highlight-box">
+                <p>🎯 We use YOLOv8 Computer Vision to detect two things simultaneously: <strong>Students</strong> entering the line and the <strong>Meal Plates</strong> being served.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <div class="slide-number">Slide 03</div>
+            <h2>No Double Counting (Tracking)</h2>
+            <p>A student might stand in the camera frame for 10 seconds. If we count every frame, one student becomes ten.</p>
+            <p>To solve this, we integrated a <strong>ByteTrack-style tracking algorithm</strong>. Every student is assigned a unique ID (e.g., Student #1, #2, #3). Even as they move, the AI remembers them and only counts them once.</p>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <div class="slide-number">Slide 04</div>
+            <h2>Human-in-the-Loop Verification</h2>
+            <p>We believe AI should assist humans, not replace them blindly.</p>
+            <p>When the AI detects the students and plates, it does <strong>not</strong> save automatically. The operator (teacher) must review the visual count on the dashboard and click <strong>"Confirm & Save"</strong>. This prevents false detections from ruining the database.</p>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <div class="slide-number">Slide 05</div>
+            <h2>The Integrity Check</h2>
+            <p>Once saved, the system acts as an auditor. It compares three numbers:</p>
+            <div class="highlight-box">
+                <p>1. Official Attendance <br> 2. AI Student Count <br> 3. AI Plate Count</p>
+            </div>
+            <p>If the AI sees 45 students but only 40 plates, the dashboard instantly flags an <strong style="color: #ef4444;">ERROR: 5 students missing meals</strong>, alerting the principal immediately.</p>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide">
+            <div class="slide-number">Slide 06</div>
+            <h2>Technology Stack</h2>
+            <p>Built using modern, high-performance open-source technologies:</p>
+            <div class="tech-grid">
+                <div class="tech-tag">Python (Flask)</div>
+                <div class="tech-tag">YOLOv8 (ONNX)</div>
+                <div class="tech-tag">OpenCV</div>
+                <div class="tech-tag">SQLite Database</div>
+                <div class="tech-tag">HTML/CSS/JS</div>
+                <div class="tech-tag">Render Cloud</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
