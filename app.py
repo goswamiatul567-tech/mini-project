@@ -14,7 +14,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # 1. LANDING PAGE
 @app.route("/")
 def landing():
-    return render_template("landing.html")
+    return render_template("index.html")
 
 # 2. DASHBOARD
 @app.route("/dashboard")
