@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | MealTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --primary-hover: #6366f1; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } }
+
+        /* Content */
+        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; flex: 1; width: 100%; }
+        
+        .section-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .section-card h1 { font-size: 32px; margin-bottom: 20px; color: var(--primary); }
+        .section-card h2 { font-size: 24px; margin-bottom: 15px; color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .section-card p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 15px; }
+        
+        .contact-info { margin-top: 20px; }
+        .contact-info p { margin-bottom: 10px; font-size: 16px; }
+        .contact-info a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .contact-info a:hover { text-decoration: underline; }
+
+        .highlight-box { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-top: 30px; }
+        .highlight-box p { color: var(--text-main); margin: 0; font-weight: 500; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">🍲 MealTrack</a>
+        <div class="nav-links">
+            <a href="/">HOME</a>
+            <a href="/how-it-works">HOW IT WORKS</a>
+            <a href="/about">ABOUT</a>
+            <a href="/contact" class="active">CONTACT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="section-card">
+            <h1>Contact Us</h1>
+            <p>Have questions, suggestions, or want to know more about our Meal Monitoring System? We'd love to hear from you!</p>
+            <p>We welcome feedback, collaboration opportunities, and suggestions to improve our project.</p>
+        </div>
+
+        <div class="section-card">
+            <h2>Project Contact</h2>
+            <div class="contact-info">
+                <p style="font-size: 20px; font-weight: 600; color: white; margin-bottom: 5px;">Atul Goswami</p>
+                <p style="color: var(--primary); font-weight: 600; margin-bottom: 15px;">Lead Developer & Project Creator</p>
+                <p>Meerut Institute of Engineering and Technology</p>
+                <p>Department of CSE – Data Science</p>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>Get in Touch</h2>
+            <div class="contact-info">
+                <p>Email: <a href="mailto:atul.goswami.cseds.2025@miet.ac.in">atul.goswami.cseds.2025@miet.ac.in</a></p>
+                <p>GitHub: <a href="https://github.com/goswamiatul567-tech" target="_blank">Atul Goswami (github.com/goswamiatul567-tech)</a></p>
+            </div>
+            <p style="margin-top: 20px;">For project-related queries, technical support, or collaboration, feel free to reach out.</p>
+            
+            <div class="highlight-box">
+                <p>"Our mission is to make school meal distribution transparent, accountable and fair for every student."</p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -19,6 +19,10 @@ def landing():
 
 @app.route("/how-it-works")
 @app.route("/about")
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 def about():
     return render_template("about.html")
 
