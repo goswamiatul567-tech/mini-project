@@ -2,7 +2,9 @@ import os
 import cv2
 import numpy as np
 import sqlite3
-from flask import Flask, render_template, request, jsonify
+import csv
+import io
+from flask import Flask, render_template, request, jsonify, Response
 from utils.detector import process_frame
 from database.db import init_db, verify_and_save, get_records, sync_to_cloud, DB_PATH
 
@@ -27,7 +29,6 @@ def dashboard():
 
 @app.route("/alerts")
 def alerts():
-    # Fetch ONLY errors
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM records WHERE status LIKE '%ERROR%' ORDER BY id DESC").fetchall()
@@ -36,14 +37,32 @@ def alerts():
 
 @app.route("/records")
 def records_page():
-    # Fetch ALL records
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
     conn.close()
     return render_template("records.html", all_records=[dict(row) for row in rows])
 
-# ... (Keep the rest of the routes: /upload, /save_record, /live_frame, /finish_live, /api/all_records, /api/reset) ...
+@app.route("/export_csv")
+def export_csv():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
+    conn.close()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Date/Time", "Class", "Section", "Attendance", "Students Detected", "Plates Detected", "Status"])
+    
+    for row in rows:
+        writer.writerow([row["id"], row["timestamp"], row["class_name"], row["section"], row["attendance"], row["students"], row["plates"], row["status"]])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=MealTrack_Audit_Records.csv"}
+    )
+
 @app.route("/upload", methods=["POST"])
 def upload():
     if "image" not in request.files: return jsonify({"error": "No image uploaded"}), 400
@@ -81,6 +100,14 @@ def finish_live():
     tracker.tracks.clear()
     tracker.next_id = 1
     return jsonify({"success": True, "status": status})
+
+@app.route("/api/all_records")
+def api_all_records():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
 
 @app.route("/api/reset", methods=["POST"])
 def reset_data():

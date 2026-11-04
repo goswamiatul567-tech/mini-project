@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Records | MealTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; }
+        .sidebar { width: 240px; background-color: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; text-decoration: none; color: white; }
+        .logo-icon { width: 28px; height: 28px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .nav-section { display: flex; flex-direction: column; gap: 5px; margin-top: 20px; }
+        .nav-item { padding: 10px 15px; border-radius: 8px; color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 500; }
+        .nav-item:hover { background: var(--bg-card); }
+        .nav-item.active { background: var(--primary); color: white; }
+        @media (max-width: 768px) { .sidebar { width: 70px; padding: 15px 5px; align-items: center; } .logo span, .nav-item span { display: none; } .nav-item { padding: 10px; } }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-title { font-size: 24px; font-weight: 700; }
+        .btn-export { background: var(--success); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-export:hover { background: #059669; }
+        .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/" class="logo"><div class="logo-icon">🍲</div> <span>MealTrack</span></a>
+        <div class="nav-section">
+            <a class="nav-item" href="/dashboard">📊 <span>Dashboard</span></a>
+            <a class="nav-item active" href="/records">📋 <span>Student Record</span></a>
+            <a class="nav-item" href="/alerts">🚨 <span>Alerts</span></a>
+            <a class="nav-item" href="#">⚙️ <span>Settings</span></a>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="header-row">
+            <div class="page-title">📋 Student & Meal Records</div>
+            <a href="/export_csv" class="btn-export">📥 Export to Excel</a>
+        </div>
+        <div class="panel">
+            <table>
+                <thead><tr><th>Date/Time</th><th>Class</th><th>Attendance</th><th>Students Detected</th><th>Plates Detected</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for row in all_records %}
+                    <tr>
+                        <td>{{ row.timestamp }}</td>
+                        <td>{{ row.class_name }}-{{ row.section }}</td>
+                        <td>{{ row.attendance }}</td>
+                        <td>{{ row.students }}</td>
+                        <td>{{ row.plates }}</td>
+                        <td>
+                            {% if 'ERROR' in row.status %}<span class="badge badge-error">{{ row.status }}</span>
+                            {% elif 'VERIFIED' in row.status %}<span class="badge badge-success">{{ row.status }}</span>
+                            {% else %}<span class="badge badge-warning">{{ row.status }}</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" style="text-align:center; padding: 20px;">No records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
