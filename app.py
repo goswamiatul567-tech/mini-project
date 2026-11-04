@@ -1,9 +1,10 @@
 import os
 import cv2
 import numpy as np
+import sqlite3
 from flask import Flask, render_template, request, jsonify
 from utils.detector import process_frame
-from database.db import init_db, verify_and_save, get_records, sync_to_cloud
+from database.db import init_db, verify_and_save, get_records, sync_to_cloud, DB_PATH
 
 app = Flask(__name__)
 init_db()
@@ -20,7 +21,6 @@ def upload():
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
     
-    # Get the new form data
     class_name = request.form.get("class_name", "Unknown")
     section = request.form.get("section", "Unknown")
     attendance = int(request.form.get("attendance", 0))
@@ -79,17 +79,19 @@ def finish_live():
     
     status = verify_and_save(class_name, section, students, plates, attendance)
     
-    # Reset tracker
     from utils.tracker import tracker
     tracker.tracks.clear()
     tracker.next_id = 1
     
     return jsonify({"success": True, "status": status})
 
-@app.route("/api/sync", methods=["POST"])
-def sync_offline():
-    sync_to_cloud()
-    return jsonify({"success": True, "message": "Synced!"})
+@app.route("/api/reset", methods=["POST"])
+def reset_data():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("DELETE FROM records")
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

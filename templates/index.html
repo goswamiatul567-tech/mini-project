@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Mid-Day Meal Monitoring</title>
+    <title>MealTrack | Smart Monitoring</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,120 +16,108 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: 260px; background-color: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 30px; }
-        .logo { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 30px; height: 30px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .nav-section { display: flex; flex-direction: column; gap: 5px; }
-        .nav-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; padding-left: 10px; }
-        .nav-item { padding: 12px 15px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background-color: var(--primary); color: white; }
+        .sidebar { width: 240px; background-color: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .logo-icon { width: 28px; height: 28px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .nav-item { padding: 10px 15px; border-radius: 8px; color: var(--text-main); background: var(--bg-card); font-size: 14px; font-weight: 500; }
+        @media (max-width: 768px) { 
+            .sidebar { width: 80px; padding: 15px 5px; align-items: center; } 
+            .logo span, .nav-item { display: none; } 
+            .logo { margin-bottom: 0; }
+        }
 
         /* Main Content */
         .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .topbar { height: 70px; background-color: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .user-profile { display: flex; align-items: center; gap: 15px; }
-        .sys-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 5px 10px; border-radius: 20px; font-weight: bold; }
-        .dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        
+        /* Topbar */
+        .topbar { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border); position: relative; }
+        .topbar-title { font-size: 16px; font-weight: 600; }
+        
+        /* 3-Dots Menu */
+        .menu-btn { background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0 10px; }
+        .dropdown-menu { 
+            position: absolute; top: 50px; right: 20px; background: var(--bg-card); border: 1px solid var(--border); 
+            border-radius: 8px; display: none; flex-direction: column; width: 160px; z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .dropdown-menu a { padding: 12px 15px; color: var(--text-main); text-decoration: none; font-size: 13px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .dropdown-menu a:hover { background: var(--primary); }
+        .dropdown-menu a:last-child { border-bottom: none; color: var(--danger); }
 
         /* Page Content */
-        .page-content { padding: 30px; display: flex; flex-direction: column; gap: 25px; }
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
-        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-        .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-        .panel-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
-
-        /* Media Box */
-        .media-box { width: 100%; min-height: 350px; background: var(--bg-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 1px dashed var(--border); }
-        .media-box video, .media-box img { width: 100%; height: auto; display: none; object-fit: cover; }
-        .media-box p { color: var(--text-muted); font-size: 14px; position: absolute; }
+        .page-content { padding: 20px; }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        
+        /* Media Feed Box */
+        .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; }
+        .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 15px; color: var(--text-main); }
+        
+        .media-box { 
+            width: 100%; min-height: 300px; background: var(--bg-card); border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; 
+            position: relative; border: 1px dashed var(--border); flex-grow: 1;
+        }
+        .media-box video, .media-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .media-box p { color: var(--text-muted); font-size: 13px; position: absolute; }
 
         /* Buttons */
-        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; flex: 1; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); display: none; }
 
+        /* Setup Form */
+        .setup-form { display: none; flex-direction: column; gap: 12px; padding: 20px; background: var(--bg-card); border-radius: 8px; margin-top: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 12px; color: var(--text-muted); }
+        .form-group input { padding: 10px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px; color: white; font-family: inherit; }
+        
         /* Stats */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
-        .stat-title { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
-        .stat-value { font-size: 32px; font-weight: 700; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--bg-card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--text-main); }
+        .stat-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 
         /* Table */
-        .table-container { margin-top: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; padding: 12px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { text-align: left; padding: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; }
+        td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
         .badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-
-        /* Modal Setup */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
-        .modal-box h2 { margin-bottom: 20px; font-size: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; color: white; font-family: inherit; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <!-- Setup Modal -->
-    <div class="modal-overlay" id="setupModal">
-        <div class="modal-box">
-            <h2>Session Setup</h2>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Please enter the class details before starting the AI monitoring.</p>
-            
-            <div class="form-group">
-                <label>Class</label>
-                <input type="text" id="inputClass" placeholder="e.g., 5" required>
-            </div>
-            <div class="form-group">
-                <label>Section</label>
-                <input type="text" id="inputSection" placeholder="e.g., A" required>
-            </div>
-            <div class="form-group">
-                <label>Present Students (Attendance)</label>
-                <input type="number" id="inputAttendance" placeholder="e.g., 45" required>
-            </div>
-            
-            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="startSession()">Start Session</button>
-        </div>
-    </div>
-
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="logo"><div class="logo-icon">🍲</div>MealTrack</div>
-        <div class="nav-section">
-            <div class="nav-title">Pages</div>
-            <a class="nav-item active">📊 Dashboard</a>
-            <a class="nav-item">📹 Live Monitor</a>
-            <a class="nav-item">📜 Audit Logs</a>
-        </div>
+        <div class="logo"><div class="logo-icon">🍲</div> <span>MealTrack</span></div>
+        <div class="nav-item">📊 Dashboard</div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
+        
         <div class="topbar">
-            <div style="font-weight: 600;" id="sessionInfo">Session Not Started</div>
-            <div class="user-profile">
-                <div class="sys-status"><div class="dot"></div> System Online</div>
+            <div class="topbar-title" id="sessionInfo">No Active Session</div>
+            <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+            
+            <!-- Dropdown Menu -->
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a onclick="showSetupForm()">➕ Add Session</a>
+                <a onclick="window.scrollTo(0, document.body.scrollHeight)">📜 Show All Logs</a>
+                <a onclick="resetAll()" style="color: var(--danger);">🗑️ Reset All Data</a>
             </div>
         </div>
 
         <div class="page-content">
-            <div>
-                <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 5px;">Meal Monitoring Dashboard</h1>
-            </div>
-
             <div class="dashboard-grid">
                 
-                <!-- Left: Camera Feed -->
+                <!-- Left: Camera Feed & Setup -->
                 <div class="panel">
                     <div class="panel-title">Surveillance Feed</div>
                     <div class="media-box">
@@ -138,65 +126,66 @@
                         <canvas id="canvasFeed" style="display:none;"></canvas>
                         <img id="resultImage" src="" alt="AI Result">
                     </div>
+                    
+                    <!-- Setup Form (Hidden by default) -->
+                    <div class="setup-form" id="setupForm">
+                        <div class="form-group"><label>Class</label><input type="text" id="inputClass" placeholder="e.g. 5"></div>
+                        <div class="form-group"><label>Section</label><input type="text" id="inputSection" placeholder="e.g. A"></div>
+                        <div class="form-group"><label>Present Students</label><input type="number" id="inputAttendance" placeholder="e.g. 45"></div>
+                        <button class="btn btn-primary" onclick="startSession()">START SESSION</button>
+                    </div>
+
                     <div class="btn-group">
-                        <label for="fileInput" class="btn btn-outline" id="uploadBtn" style="opacity: 0.5; pointer-events: none;">📁 Upload Media</label>
+                        <label for="fileInput" class="btn btn-outline" id="uploadBtn" style="opacity: 0.5; pointer-events: none;">Upload Media</label>
                         <input type="file" id="fileInput" accept="image/*" style="display:none;">
-                        <button id="startLiveBtn" class="btn btn-primary" style="opacity: 0.5; pointer-events: none;">🎥 Start Live Camera</button>
-                        <button id="stopLiveBtn" class="btn btn-danger">⏹ Stop & Save</button>
+                        <button id="startLiveBtn" class="btn btn-primary" style="opacity: 0.5; pointer-events: none;">Live Camera</button>
+                        <button id="stopLiveBtn" class="btn btn-danger">Stop & Save</button>
                     </div>
                 </div>
 
                 <!-- Right: Stats & Logs -->
-                <div style="display: flex; flex-direction: column; gap: 25px;">
-                    <div class="panel">
-                        <div class="panel-title">Live Telemetry</div>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-title">STUDENTS TRACKED</div>
-                                <div class="stat-value" id="studentCount">0</div>
-                            </div>
-                            <div class="stat-card" style="border-left: 3px solid var(--success);">
-                                <div class="stat-title">PLATES DETECTED</div>
-                                <div class="stat-value" id="plateCount">0</div>
-                            </div>
+                <div class="panel">
+                    <div class="panel-title">Live Telemetry</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="studentCount">0</div>
+                            <div class="stat-title">Students</div>
                         </div>
-                        <div id="statusBox" style="margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
+                        <div class="stat-card" style="border-bottom: 2px solid var(--success);">
+                            <div class="stat-value" id="plateCount">0</div>
+                            <div class="stat-title">Plates</div>
+                        </div>
                     </div>
+                    <div id="statusBox" style="margin-bottom: 15px; padding: 10px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; display: none;"></div>
 
-                    <div class="panel" style="flex: 1;">
-                        <div class="panel-title">Recent Audit Logs</div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Time</th>
-                                        <th>Class</th>
-                                        <th>Stu/Pla</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for row in records %}
-                                    <tr>
-                                        <td>{{ row[1][11:16] }}</td>
-                                        <td>{{ row[2] }}-{{ row[3] }}</td>
-                                        <td>{{ row[4] }} / {{ row[5] }}</td>
-                                        <td>
-                                            {% if 'ERROR' in row[7] %}
-                                                <span class="badge badge-error">{{ row[7] }}</span>
-                                            {% elif 'VERIFIED' in row[7] %}
-                                                <span class="badge badge-success">{{ row[7] }}</span>
-                                            {% else %}
-                                                <span class="badge badge-warning">{{ row[7] }}</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% else %}
-                                    <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No records yet.</td></tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="panel-title">Audit Logs</div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Class</th>
+                                    <th>Stu/Pla</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTableBody">
+                                {% for row in records %}
+                                <tr>
+                                    <td>{{ row[1][11:16] }}</td>
+                                    <td>{{ row[2] }}-{{ row[3] }}</td>
+                                    <td>{{ row[4] }} / {{ row[5] }}</td>
+                                    <td>
+                                        {% if 'ERROR' in row[7] %}<span class="badge badge-error">ERROR</span>
+                                        {% elif 'VERIFIED' in row[7] %}<span class="badge badge-success">VERIFIED</span>
+                                        {% else %}<span class="badge badge-warning">WARN</span>{% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No records yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -213,40 +202,52 @@
     const uploadBtn = document.getElementById('uploadBtn');
     let liveInterval;
 
-    // Session Variables
-    let currentClass = "";
-    let currentSection = "";
-    let currentAttendance = 0;
+    let currentClass = "", currentSection = "", currentAttendance = 0;
 
-    // 1. Start Session (Modal)
+    // Menu Toggle
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // Show Setup Form
+    function showSetupForm() {
+        document.getElementById('dropdownMenu').style.display = 'none';
+        document.getElementById('setupForm').style.display = 'flex';
+        video.style.display = 'none';
+        resultImage.style.display = 'none';
+        placeholder.style.display = 'block';
+        placeholder.innerText = "Waiting for session setup...";
+    }
+
+    // Reset All Data
+    function resetAll() {
+        if(confirm("Are you sure you want to delete all records?")) {
+            fetch('/api/reset', { method: 'POST' }).then(() => window.location.reload());
+        }
+    }
+
+    // Start Session
     function startSession() {
         currentClass = document.getElementById('inputClass').value;
         currentSection = document.getElementById('inputSection').value;
         currentAttendance = document.getElementById('inputAttendance').value;
 
-        if(!currentClass || !currentSection || !currentAttendance) {
-            alert("Please fill all fields!");
-            return;
-        }
+        if(!currentClass || !currentSection || !currentAttendance) { alert("Fill all fields"); return; }
 
-        document.getElementById('setupModal').style.display = 'none';
-        document.getElementById('sessionInfo').innerText = `Active Session: Class ${currentClass}-${currentSection} (Att: ${currentAttendance})`;
+        document.getElementById('setupForm').style.display = 'none';
+        placeholder.innerText = "Camera Offline / No Image";
+        document.getElementById('sessionInfo').innerText = `Active: Class ${currentClass}-${currentSection} (Att: ${currentAttendance})`;
         
-        // Enable buttons
-        startBtn.style.opacity = '1';
-        startBtn.style.pointerEvents = 'auto';
-        uploadBtn.style.opacity = '1';
-        uploadBtn.style.pointerEvents = 'auto';
+        startBtn.style.opacity = '1'; startBtn.style.pointerEvents = 'auto';
+        uploadBtn.style.opacity = '1'; uploadBtn.style.pointerEvents = 'auto';
     }
 
-    // 2. Image Upload
+    // Upload
     document.getElementById('fileInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (!file) return;
-        
-        video.style.display = 'none';
-        placeholder.style.display = 'none';
-        resultImage.style.display = 'none';
+        video.style.display = 'none'; placeholder.style.display = 'none'; resultImage.style.display = 'none';
 
         const formData = new FormData();
         formData.append('image', file);
@@ -255,90 +256,58 @@
         formData.append('attendance', currentAttendance);
 
         fetch('/upload', { method: 'POST', body: formData })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) updateUI(data);
-        });
+        .then(res => res.json()).then(data => { if (data.success) updateUI(data); });
     });
 
-    // 3. Live Camera
+    // Live
     startBtn.addEventListener('click', async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            video.srcObject = stream;
-            video.style.display = 'block';
-            placeholder.style.display = 'none';
-            resultImage.style.display = 'none';
-            
-            startBtn.style.display = 'none';
-            stopBtn.style.display = 'inline-block';
+            video.srcObject = stream; video.style.display = 'block';
+            placeholder.style.display = 'none'; resultImage.style.display = 'none';
+            startBtn.style.display = 'none'; stopBtn.style.display = 'flex';
 
             liveInterval = setInterval(() => {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
                 canvas.getContext('2d').drawImage(video, 0, 0);
-                
                 canvas.toBlob(blob => {
-                    const formData = new FormData();
-                    formData.append('frame', blob, 'frame.jpg');
-                    
+                    const formData = new FormData(); formData.append('frame', blob, 'frame.jpg');
                     fetch('/live_frame', { method: 'POST', body: formData })
-                    .then(res => res.json())
-                    .then(data => { if (data.success) updateUI(data, true); });
+                    .then(res => res.json()).then(data => { if (data.success) updateUI(data, true); });
                 }, 'image/jpeg');
             }, 1500);
-
         } catch (err) { alert("Camera denied: " + err.message); }
     });
 
-    // 4. Stop Live
+    // Stop Live
     stopBtn.addEventListener('click', () => {
-        clearInterval(liveInterval);
-        video.srcObject.getTracks().forEach(track => track.stop());
-        video.style.display = 'none';
-        startBtn.style.display = 'inline-block';
-        stopBtn.style.display = 'none';
+        clearInterval(liveInterval); video.srcObject.getTracks().forEach(t => t.stop());
+        video.style.display = 'none'; startBtn.style.display = 'flex'; stopBtn.style.display = 'none';
 
         fetch('/finish_live', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 students: parseInt(document.getElementById('studentCount').innerText),
                 plates: parseInt(document.getElementById('plateCount').innerText),
-                class_name: currentClass,
-                section: currentSection,
-                attendance: currentAttendance
+                class_name: currentClass, section: currentSection, attendance: currentAttendance
             })
         }).then(() => window.location.reload());
     });
 
-    // UI Update
     function updateUI(data, isLive = false) {
         document.getElementById('studentCount').innerText = data.students;
         document.getElementById('plateCount').innerText = data.plates;
         
         if (!isLive) {
-            resultImage.src = data.image_url + "?t=" + new Date().getTime();
-            resultImage.style.display = 'block';
-            
+            resultImage.src = data.image_url + "?t=" + new Date().getTime(); resultImage.style.display = 'block';
             const statusBox = document.getElementById('statusBox');
-            statusBox.innerText = data.status;
-            statusBox.style.display = 'block';
-            
-            if(data.status.includes('ERROR')) {
-                statusBox.style.background = 'rgba(239, 68, 68, 0.1)';
-                statusBox.style.color = 'var(--danger)';
-            } else if(data.status.includes('VERIFIED')) {
-                statusBox.style.background = 'rgba(16, 185, 129, 0.1)';
-                statusBox.style.color = 'var(--success)';
-            } else {
-                statusBox.style.background = 'rgba(245, 158, 11, 0.1)';
-                statusBox.style.color = 'var(--warning)';
-            }
+            statusBox.innerText = data.status; statusBox.style.display = 'block';
+            if(data.status.includes('ERROR')) { statusBox.style.background = 'rgba(239, 68, 68, 0.1)'; statusBox.style.color = 'var(--danger)'; }
+            else if(data.status.includes('VERIFIED')) { statusBox.style.background = 'rgba(16, 185, 129, 0.1)'; statusBox.style.color = 'var(--success)'; }
+            else { statusBox.style.background = 'rgba(245, 158, 11, 0.1)'; statusBox.style.color = 'var(--warning)'; }
             setTimeout(() => window.location.reload(), 3000);
         } else {
-            resultImage.src = data.image_url + "?t=" + new Date().getTime();
-            resultImage.style.display = 'block';
+            resultImage.src = data.image_url + "?t=" + new Date().getTime(); resultImage.style.display = 'block';
         }
     }
 </script>
