@@ -11,12 +11,10 @@ init_db()
 UPLOAD_FOLDER = os.path.join("static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 1. LANDING PAGE
 @app.route("/")
 def landing():
     return render_template("index.html")
 
-# 2. DASHBOARD
 @app.route("/dashboard")
 def dashboard():
     records = get_records()
@@ -27,8 +25,25 @@ def dashboard():
     stats = {"total_meals": total_meals, "total_errors": total_errors}
     return render_template("dashboard.html", records=records, stats=stats)
 
-# ... (Keep the rest of the routes: /upload, /save_record, /live_frame, /finish_live, /api/all_records, /api/reset) ...
+@app.route("/alerts")
+def alerts():
+    # Fetch ONLY errors
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM records WHERE status LIKE '%ERROR%' ORDER BY id DESC").fetchall()
+    conn.close()
+    return render_template("alerts.html", alerts=[dict(row) for row in rows])
 
+@app.route("/records")
+def records_page():
+    # Fetch ALL records
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
+    conn.close()
+    return render_template("records.html", all_records=[dict(row) for row in rows])
+
+# ... (Keep the rest of the routes: /upload, /save_record, /live_frame, /finish_live, /api/all_records, /api/reset) ...
 @app.route("/upload", methods=["POST"])
 def upload():
     if "image" not in request.files: return jsonify({"error": "No image uploaded"}), 400
@@ -66,14 +81,6 @@ def finish_live():
     tracker.tracks.clear()
     tracker.next_id = 1
     return jsonify({"success": True, "status": status})
-
-@app.route("/api/all_records")
-def all_records():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    rows = conn.execute("SELECT * FROM records ORDER BY id DESC").fetchall()
-    conn.close()
-    return jsonify([dict(row) for row in rows])
 
 @app.route("/api/reset", methods=["POST"])
 def reset_data():
