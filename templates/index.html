@@ -4,157 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Mid-Day Meal Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            --bg-dark: #0b0e14;
+            --bg-panel: #131824;
+            --bg-card: #1c2331;
             --primary: #4f46e5;
+            --primary-hover: #6366f1;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --dark: #1e293b;
-            --light: #f8fafc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #2a3441;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e2e8f0; margin: 0; padding: 20px; color: #334155; }
-        
-        /* Header */
-        .header { background: var(--dark); color: white; padding: 15px 30px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
-        .header p { margin: 5px 0 0 0; font-size: 13px; color: #cbd5e1; }
-        .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: var(--success); }
-        .dot { width: 10px; height: 10px; background-color: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-        /* Main Layout */
-        .container { max-width: 1100px; margin: auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-
-        /* Cards */
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; color: var(--dark); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .logo { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 30px; height: 30px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        
+        .nav-section { display: flex; flex-direction: column; gap: 5px; }
+        .nav-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; padding-left: 10px; }
+        .nav-item { 
+            padding: 12px 15px; 
+            border-radius: 8px; 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-size: 14px; 
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-item:hover, .nav-item.active { background-color: var(--primary); color: white; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Top Navbar */
+        .topbar {
+            height: 70px;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        .search-bar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px 20px;
+            color: var(--text-muted);
+            width: 300px;
+            font-size: 13px;
+        }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .sys-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 5px 10px; border-radius: 20px; font-weight: bold; }
+        .dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Page Content */
+        .page-content { padding: 30px; display: flex; flex-direction: column; gap: 25px; }
+        .page-title { font-size: 24px; font-weight: 600; margin-bottom: 5px; }
+        
+        /* Grid Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        /* Panels */
+        .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .panel-title { font-size: 16px; font-weight: 600; }
+
+        /* Media Box */
+        .media-box { 
+            width: 100%; 
+            min-height: 350px; 
+            background: var(--bg-card); 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            position: relative;
+            border: 1px dashed var(--border);
+        }
+        .media-box video, .media-box img { width: 100%; height: auto; display: none; object-fit: cover; }
+        .media-box p { color: var(--text-muted); font-size: 14px; position: absolute; }
+
         /* Buttons */
-        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        .btn { 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            transition: 0.2s;
+        }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #4338ca; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; }
-        .btn-danger { background: var(--danger); color: white; display: none; }
-        .btn-danger:hover { background: #dc2626; }
-        .btn-outline { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
-        .btn-outline:hover { background: var(--dark); color: white; }
-
-        /* Media Area */
-        .media-box { width: 100%; min-height: 300px; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        .media-box video, .media-box img { width: 100%; height: auto; display: none; }
-        .media-box p { color: #64748b; position: absolute; font-size: 14px; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: var(--bg-card); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); display: none; }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
         /* Stats */
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .stat-box { background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid var(--primary); }
-        .stat-box h2 { margin: 0; font-size: 32px; color: var(--dark); }
-        .stat-box p { margin: 5px 0 0 0; font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; }
-
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+        .stat-title { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
+        .stat-value { font-size: 32px; font-weight: 700; color: var(--text-main); }
+        
         /* Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; }
-        tr:hover { background-color: #f8fafc; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
-        .badge-error { background: #fee2e2; color: #991b1b; }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
+        .table-container { margin-top: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 12px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); }
+        tr:hover td { background-color: rgba(255, 255, 255, 0.02); }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div>
-            <h1>Smart Mid-Day Meal Monitoring System</h1>
-            <p>AI-Powered Transparency & Accountability</p>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">🍲</div>
+            MealTrack
         </div>
-        <div class="status-indicator">
-            <div class="dot"></div> SYSTEM ONLINE
+        
+        <div class="nav-section">
+            <div class="nav-title">Pages</div>
+            <a class="nav-item active">📊 Dashboard</a>
+            <a class="nav-item">📹 Live Monitor</a>
+            <a class="nav-item">📜 Audit Logs</a>
+            <a class="nav-item">⚙️ Settings</a>
+        </div>
+
+        <div class="nav-section" style="margin-top: auto;">
+            <div class="nav-title">System</div>
+            <a class="nav-item" onclick="syncData()">☁️ Sync to Cloud</a>
         </div>
     </div>
 
-    <div class="grid">
-        <!-- Left Column: Media & Controls -->
-        <div class="card">
-            <h3>Surveillance Feed</h3>
-            <div class="media-box">
-                <p id="placeholderText">Camera Offline / No Image</p>
-                <video id="videoFeed" autoplay playsinline></video>
-                <canvas id="canvasFeed" style="display:none;"></canvas>
-                <img id="resultImage" src="" alt="AI Result">
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- Topbar -->
+        <div class="topbar">
+            <input type="text" class="search-bar" placeholder="Search records, students...">
+            <div class="user-profile">
+                <div class="sys-status"><div class="dot"></div> System Online</div>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            <div>
+                <h1 class="page-title">Meal Monitoring Dashboard</h1>
+                <p style="color: var(--text-muted); font-size: 14px;">Real-time AI surveillance and meal verification.</p>
             </div>
 
-            <div class="btn-group" style="margin-top: 15px;">
-                <label for="fileInput" class="btn btn-outline">📁 Upload Image</label>
-                <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            <div class="dashboard-grid">
                 
-                <button id="startLiveBtn" class="btn btn-primary">🎥 Start Live Camera</button>
-                <button id="stopLiveBtn" class="btn btn-danger">⏹ Stop & Save</button>
-            </div>
-        </div>
+                <!-- Left: Camera Feed -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Surveillance Feed</div>
+                    </div>
+                    
+                    <div class="media-box">
+                        <p id="placeholderText">Camera Offline / No Image</p>
+                        <video id="videoFeed" autoplay playsinline></video>
+                        <canvas id="canvasFeed" style="display:none;"></canvas>
+                        <img id="resultImage" src="" alt="AI Result">
+                    </div>
 
-        <!-- Right Column: Stats & Logs -->
-        <div class="card">
-            <h3>Real-Time Telemetry</h3>
-            <div class="stats">
-                <div class="stat-box">
-                    <h2 id="studentCount">0</h2>
-                    <p>Students Tracked</p>
+                    <div class="btn-group">
+                        <label for="fileInput" class="btn btn-outline">📁 Upload Media</label>
+                        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+                        
+                        <button id="startLiveBtn" class="btn btn-primary">🎥 Start Live Camera</button>
+                        <button id="stopLiveBtn" class="btn btn-danger">⏹ Stop & Save</button>
+                    </div>
                 </div>
-                <div class="stat-box" style="border-left-color: var(--success);">
-                    <h2 id="plateCount">0</h2>
-                    <p>Plates Detected</p>
+
+                <!-- Right: Stats & Logs -->
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    
+                    <!-- Stats -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">Live Telemetry</div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-title">STUDENTS TRACKED</div>
+                                <div class="stat-value" id="studentCount">0</div>
+                            </div>
+                            <div class="stat-card" style="border-left: 3px solid var(--success);">
+                                <div class="stat-title">PLATES DETECTED</div>
+                                <div class="stat-value" id="plateCount">0</div>
+                            </div>
+                        </div>
+                        <div id="statusBox" style="margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
+                    </div>
+
+                    <!-- Logs -->
+                    <div class="panel" style="flex: 1;">
+                        <div class="panel-header">
+                            <div class="panel-title">Recent Audit Logs</div>
+                            <a href="#" style="color: var(--primary); font-size: 12px; text-decoration: none;">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Stu</th>
+                                        <th>Pla</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in records %}
+                                    <tr>
+                                        <td>{{ row[1][11:16] }}</td>
+                                        <td>{{ row[2] }}</td>
+                                        <td>{{ row[3] }}</td>
+                                        <td>
+                                            {% if 'ERROR' in row[5] %}
+                                                <span class="badge badge-error">{{ row[5] }}</span>
+                                            {% elif 'VERIFIED' in row[5] %}
+                                                <span class="badge badge-success">{{ row[5] }}</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">{{ row[5] }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">No records yet.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-
-            <div id="statusBox" style="text-align: center; padding: 15px; margin-top: 20px; border-radius: 8px; font-weight: bold; display: none;"></div>
-
-            <h3 style="margin-top: 25px;">Audit Ledger</h3>
-            <div style="max-height: 200px; overflow-y: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Stu</th>
-                            <th>Plate</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in records %}
-                        <tr>
-                            <td>{{ row[1][11:16] }}</td>
-                            <td>{{ row[2] }}</td>
-                            <td>{{ row[3] }}</td>
-                            <td>
-                                {% if 'ERROR' in row[5] %}
-                                    <span class="badge badge-error">{{ row[5] }}</span>
-                                {% elif 'VERIFIED' in row[5] %}
-                                    <span class="badge badge-success">{{ row[5] }}</span>
-                                {% else %}
-                                    <span class="badge badge-warning">{{ row[5] }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="4" style="text-align:center;">No records yet.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="btn-group" style="margin-top: 15px;">
-                <button class="btn btn-outline" onclick="syncData()" style="width: 100%;">☁️ Sync Offline Data</button>
             </div>
         </div>
     </div>
-</div>
 
 <script>
     const video = document.getElementById('videoFeed');
@@ -165,7 +306,7 @@
     const stopBtn = document.getElementById('stopLiveBtn');
     let liveInterval;
 
-    // 1. Image Upload
+    // Image Upload
     document.getElementById('fileInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -180,15 +321,12 @@
         fetch('/upload', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
-            if (data.success) {
-                updateUI(data);
-            } else {
-                alert("Error: " + data.error);
-            }
+            if (data.success) updateUI(data);
+            else alert("Error: " + data.error);
         });
     });
 
-    // 2. Live Camera
+    // Live Camera
     startBtn.addEventListener('click', async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -211,18 +349,14 @@
                     
                     fetch('/live_frame', { method: 'POST', body: formData })
                     .then(res => res.json())
-                    .then(data => {
-                        if (data.success) updateUI(data, true);
-                    });
+                    .then(data => { if (data.success) updateUI(data, true); });
                 }, 'image/jpeg');
             }, 1500);
 
-        } catch (err) {
-            alert("Camera access denied: " + err.message);
-        }
+        } catch (err) { alert("Camera access denied: " + err.message); }
     });
 
-    // 3. Stop Live
+    // Stop Live
     stopBtn.addEventListener('click', () => {
         clearInterval(liveInterval);
         video.srcObject.getTracks().forEach(track => track.stop());
@@ -237,22 +371,17 @@
                 students: parseInt(document.getElementById('studentCount').innerText),
                 plates: parseInt(document.getElementById('plateCount').innerText)
             })
-        }).then(() => {
-            window.location.reload();
-        });
+        }).then(() => window.location.reload());
     });
 
-    // 4. Sync Data
+    // Sync Data
     function syncData() {
         fetch('/api/sync', { method: 'POST' })
         .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            window.location.reload();
-        });
+        .then(data => { alert(data.message); window.location.reload(); });
     }
 
-    // Update UI Helper
+    // UI Update
     function updateUI(data, isLive = false) {
         document.getElementById('studentCount').innerText = data.students;
         document.getElementById('plateCount').innerText = data.plates;
@@ -266,16 +395,16 @@
             statusBox.style.display = 'block';
             
             if(data.status.includes('ERROR')) {
-                statusBox.style.background = '#fee2e2';
-                statusBox.style.color = '#991b1b';
+                statusBox.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusBox.style.color = 'var(--danger)';
             } else if(data.status.includes('VERIFIED')) {
-                statusBox.style.background = '#d1fae5';
-                statusBox.style.color = '#065f46';
+                statusBox.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusBox.style.color = 'var(--success)';
             } else {
-                statusBox.style.background = '#fef3c7';
-                statusBox.style.color = '#92400e';
+                statusBox.style.background = 'rgba(245, 158, 11, 0.1)';
+                statusBox.style.color = 'var(--warning)';
             }
-            setTimeout(() => { window.location.reload(); }, 3000);
+            setTimeout(() => window.location.reload(), 3000);
         } else {
             resultImage.src = data.image_url + "?t=" + new Date().getTime();
             resultImage.style.display = 'block';
