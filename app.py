@@ -18,16 +18,16 @@ def landing():
     return render_template("index.html")
 
 @app.route("/how-it-works")
-@app.route("/about")
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
+def how_it_works():
+    return render_template("how_it_works.html")
 
+@app.route("/about")
 def about():
     return render_template("about.html")
 
-def how_it_works():
-    return render_template("how_it_works.html")
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 @app.route("/dashboard")
 def dashboard():
@@ -66,7 +66,7 @@ def export_csv():
     writer.writerow(["ID", "Date/Time", "Class", "Section", "Attendance", "Students Detected", "Plates Detected", "Status"])
     for row in rows:
         writer.writerow([row["id"], row["timestamp"], row["class_name"], row["section"], row["attendance"], row["students"], row["plates"], row["status"]])
-    return Response(output.getvalue(), mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=MealTrack_Audit_Records.csv"})
+    return Response(output.getvalue(), mimetype="text/csv", headers={"Content-Disposition": "attachment; filename=MEAL_MONITORING_SYSTEM_Records.csv"})
 
 @app.route("/upload", methods=["POST"])
 def upload():
