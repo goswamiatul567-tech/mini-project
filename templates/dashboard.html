@@ -7,78 +7,87 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; 
-            --primary: #4f46e5; --primary-hover: #6366f1; 
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; 
-            --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; 
+            --bg-page: #0A0F1E; --bg-surface: #111827; --primary: #00D4FF; 
+            --text-main: #E2E8F0; --text-muted: #64748B; --danger: #FF4D4D; 
+            --success: #00C853; --border: #1E293B;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 250px; background-color: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .logo { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; text-decoration: none; color: white; line-height: 1.2; }
-        .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 40px; text-decoration: none; color: var(--text-main); line-height: 1.2; letter-spacing: 0.5px; }
+        .logo-icon { width: 32px; height: 32px; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: var(--primary); }
         .nav-section { display: flex; flex-direction: column; gap: 8px; }
-        .nav-item { padding: 12px 15px; border-radius: 8px; color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; }
-        .nav-item:hover { background: var(--bg-card); border-color: var(--border); }
-        .nav-item.active { background: var(--primary); color: white; }
+        .nav-item { padding: 12px 16px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; }
+        .nav-item:hover { background: var(--bg-page); color: var(--text-main); }
+        .nav-item.active { background: rgba(0, 212, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 212, 255, 0.2); box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.05), 0 0 10px rgba(0, 212, 255, 0.05); }
         
         .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .top-header { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--bg-page); position: sticky; top: 0; z-index: 10; }
+        .school-info { display: flex; align-items: center; gap: 24px; }
+        .school-name { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .date-box { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); background: var(--bg-surface); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); }
         
-        .top-header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--bg-dark); position: sticky; top: 0; z-index: 10; }
-        .school-info { display: flex; align-items: center; gap: 30px; }
-        .school-name { font-size: 18px; font-weight: 600; }
-        .date-box { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); background: var(--bg-panel); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); }
-        
-        .btn-add-session { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
-        .btn-add-session:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-add-session { background: rgba(0, 212, 255, 0.1); color: var(--primary); border: 1px solid var(--primary); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-add-session:hover { background: var(--primary); color: var(--bg-page); box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
 
-        .page-content { padding: 30px; display: flex; flex-direction: column; gap: 20px; }
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        .page-content { padding: 30px; display: flex; flex-direction: column; gap: 24px; }
+        .health-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .stat-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .stat-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--text-main); }
         
-        .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .panel-title { font-size: 16px; font-weight: 600; }
-        
-        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .live-dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .glow-cyan { text-shadow: 0 0 15px rgba(0, 212, 255, 0.4); color: var(--primary); }
+        .glow-danger { text-shadow: 0 0 15px rgba(255, 77, 77, 0.4); color: var(--danger); }
+        .glow-success { text-shadow: 0 0 15px rgba(0, 200, 83, 0.4); color: var(--success); font-size: 16px; margin-top: 6px; }
 
-        .media-box { width: 100%; min-height: 400px; background: var(--bg-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 1px dashed var(--border); flex-grow: 1; }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } .health-row { grid-template-columns: 1fr; } }
+        
+        .panel { background-color: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .panel-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
+        
+        .live-badge { display: flex; align-items: center; gap: 8px; background: rgba(255, 77, 77, 0.1); color: var(--danger); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 77, 77, 0.2); letter-spacing: 1px; }
+        .live-dot { width: 6px; height: 6px; background: var(--danger); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(255, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); } }
+
+        .media-box { width: 100%; min-height: 400px; background: var(--bg-page); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 1px dashed var(--border); flex-grow: 1; }
         .media-box video, .media-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
         .media-box p { color: var(--text-muted); font-size: 14px; position: absolute; }
 
-        .controls { display: flex; gap: 15px; margin-top: 15px; }
+        .controls { display: flex; gap: 16px; margin-top: 20px; }
         .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; flex: 1; }
-        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary { background: rgba(0, 212, 255, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+        .btn-primary:hover { background: var(--primary); color: var(--bg-page); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-outline:hover { background: var(--bg-card); }
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); display: none; }
+        .btn-outline:hover { background: var(--bg-page); }
+        .btn-danger { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid rgba(255, 77, 77, 0.2); display: none; }
+        .btn-danger:hover { background: var(--danger); color: white; }
 
-        .setup-form { display: none; flex-direction: column; gap: 15px; padding: 25px; background: var(--bg-card); border-radius: 12px; margin-top: 15px; border: 1px solid var(--primary); }
+        .setup-form { display: none; flex-direction: column; gap: 15px; padding: 24px; background: var(--bg-page); border-radius: 12px; margin-top: 20px; border: 1px solid var(--primary); }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 13px; color: var(--text-muted); }
-        .form-group input { padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: white; font-family: inherit; }
+        .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .form-group input { padding: 12px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-family: inherit; }
         .form-group input:focus { outline: none; border-color: var(--primary); }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
-        .stat-value { font-size: 36px; font-weight: 700; }
-        .stat-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .stat-card-center { background: var(--bg-page); padding: 20px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-value-center { font-size: 36px; font-weight: 700; color: var(--primary); text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+        .stat-title-center { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; }
 
-        .confirm-box { display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); padding: 20px; border-radius: 12px; margin-top: 15px; text-align: center; }
+        .confirm-box { display: none; background: rgba(0, 200, 83, 0.05); border: 1px solid var(--success); padding: 20px; border-radius: 12px; margin-top: 20px; text-align: center; }
         .confirm-box h3 { color: var(--success); margin-bottom: 10px; font-size: 16px; }
         .confirm-box p { font-size: 13px; margin-bottom: 15px; color: var(--text-muted); }
 
         .table-container { overflow-x: auto; flex-grow: 1; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; padding: 12px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; }
-        td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-        .badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        th { text-align: left; padding: 12px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        td { padding: 14px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+        .badge-error { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid rgba(255, 77, 77, 0.2); }
+        .badge-success { background: rgba(0, 200, 83, 0.1); color: var(--success); border: 1px solid rgba(0, 200, 83, 0.2); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
 
         @media (max-width: 768px) { 
             body { flex-direction: column; overflow-y: auto; height: auto; }
@@ -89,13 +98,14 @@
             .top-header { height: auto; padding: 15px; flex-direction: column; align-items: flex-start; gap: 15px; }
             .school-info { width: 100%; justify-content: space-between; }
             .btn-add-session { width: 100%; justify-content: center; }
-            .page-content { padding: 15px; }
+            .page-content { padding: 20px; }
+            .controls { flex-direction: column; }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <a href="/" class="logo"><div class="logo-icon">🍲</div> <span>MEAL MONITORING SYSTEM</span></a>
+        <a href="/" class="logo"><div class="logo-icon">🍲</div> <span>MEAL MONITORING<br>SYSTEM</span></a>
         <div class="nav-section">
             <a class="nav-item active" href="/dashboard">📊 Dashboard</a>
             <a class="nav-item" href="/records">📋 Student Record</a>
@@ -106,21 +116,24 @@
     <div class="main-content">
         <div class="top-header">
             <div class="school-info">
-                <div class="school-name">🏫 <span id="displaySchoolName">ABC Public School</span></div>
+                <div class="school-name"><span style="color: var(--text-muted);">🏫</span> <span id="displaySchoolName">ABC Public School</span></div>
                 <div class="date-box">📅 <span id="currentDate"></span></div>
             </div>
             <button class="btn-add-session" onclick="showSetupForm()">➕ Add Session</button>
         </div>
         <div class="page-content">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="stat-card" style="flex: 1; padding: 15px; display: flex; justify-content: space-between; align-items: center; text-align: left;">
-                    <div><div class="stat-title" style="margin: 0;">Total Meals Today</div><div class="stat-value" style="font-size: 24px;">{{ stats.total_meals }}</div></div>
+            <div class="health-row">
+                <div class="stat-card">
+                    <div class="stat-title">Total Meals Today</div>
+                    <div class="stat-value glow-cyan">{{ stats.total_meals }}</div>
                 </div>
-                <div class="stat-card" style="flex: 1; padding: 15px; display: flex; justify-content: space-between; align-items: center; text-align: left; border-color: rgba(239,68,68,0.3);">
-                    <div><div class="stat-title" style="margin: 0; color: var(--danger);">Errors Flagged</div><div class="stat-value" style="font-size: 24px;">{{ stats.total_errors }}</div></div>
+                <div class="stat-card">
+                    <div class="stat-title">Errors Flagged</div>
+                    <div class="stat-value glow-danger">{{ stats.total_errors }}</div>
                 </div>
-                <div class="stat-card" style="flex: 1; padding: 15px; display: flex; justify-content: space-between; align-items: center; text-align: left; border-color: rgba(16,185,129,0.3);">
-                    <div><div class="stat-title" style="margin: 0; color: var(--success);">Sync Status</div><div class="stat-value" style="font-size: 16px; color: var(--success);">100% Online</div></div>
+                <div class="stat-card">
+                    <div class="stat-title">Sync Status</div>
+                    <div class="stat-value glow-success">100% Online</div>
                 </div>
             </div>
             <div class="dashboard-grid">
@@ -136,7 +149,7 @@
                         <img id="resultImage" src="" alt="AI Result">
                     </div>
                     <div class="setup-form" id="setupForm">
-                        <h3 style="margin-bottom: 10px;">Start New Session</h3>
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">Start New Session</h3>
                         <div class="form-group"><label>Class</label><input type="text" id="inputClass" placeholder="e.g. 5"></div>
                         <div class="form-group"><label>Section</label><input type="text" id="inputSection" placeholder="e.g. A"></div>
                         <div class="form-group"><label>Present Students</label><input type="number" id="inputAttendance" placeholder="e.g. 45"></div>
@@ -145,7 +158,7 @@
                     <div class="confirm-box" id="confirmBox">
                         <h3>✅ AI Detection Complete</h3>
                         <p>Please review the image and counts above before saving to the database.</p>
-                        <button class="btn" onclick="saveToDatabase()" style="background: var(--success); color: white; width: 100%;">Confirm & Save to Records</button>
+                        <button class="btn" onclick="saveToDatabase()" style="background: var(--success); color: white; width: 100%; border: none;">Confirm & Save to Records</button>
                     </div>
                     <div class="controls">
                         <label for="fileInput" class="btn btn-outline" id="uploadBtn" style="opacity: 0.5; pointer-events: none;">📁 Upload Media</label>
@@ -156,19 +169,25 @@
                 </div>
                 <div class="panel">
                     <div class="panel-title">Live Telemetry</div>
-                    <div class="stats-grid" style="margin-top: 15px;">
-                        <div class="stat-card"><div class="stat-value" id="studentCount">0</div><div class="stat-title">Students</div></div>
-                        <div class="stat-card" style="border-bottom: 3px solid var(--success);"><div class="stat-value" id="plateCount">0</div><div class="stat-title">Plates</div></div>
+                    <div class="stats-grid" style="margin-top: 20px;">
+                        <div class="stat-card-center">
+                            <div class="stat-value-center" id="studentCount">0</div>
+                            <div class="stat-title-center">Students</div>
+                        </div>
+                        <div class="stat-card-center">
+                            <div class="stat-value-center" id="plateCount">0</div>
+                            <div class="stat-title-center">Plates</div>
+                        </div>
                     </div>
-                    <div id="statusBox" style="margin-bottom: 15px; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
-                    <div class="panel-title">Recent Logs</div>
-                    <div class="table-container" style="margin-top: 15px;">
+                    <div id="statusBox" style="margin-bottom: 20px; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
+                    <div class="panel-title" style="margin-bottom: 15px;">Recent Logs</div>
+                    <div class="table-container">
                         <table>
                             <thead><tr><th>Time</th><th>Class</th><th>Stu/Pla</th><th>Status</th></tr></thead>
                             <tbody>
                                 {% for row in records %}
                                 <tr>
-                                    <td>{{ row[1][11:16] }}</td>
+                                    <td style="color: var(--text-muted);">{{ row[1][11:16] }}</td>
                                     <td>{{ row[2] }}-{{ row[3] }}</td>
                                     <td>{{ row[4] }} / {{ row[5] }}</td>
                                     <td>
@@ -178,7 +197,7 @@
                                     </td>
                                 </tr>
                                 {% else %}
-                                <tr><td colspan="4" style="text-align:center; padding: 20px;">No records yet.</td></tr>
+                                <tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--text-muted);">No records yet.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -189,12 +208,12 @@
     </div>
 <script>
     const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    // Load custom school name from settings
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+
     const savedSchool = localStorage.getItem("schoolName");
     if (savedSchool) {
-        document.getElementById("displaySchoolName").innerText = savedSchool;
+        document.getElementById('displaySchoolName').innerText = savedSchool;
     }
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
 
     const video = document.getElementById('videoFeed');
     const canvas = document.getElementById('canvasFeed');
