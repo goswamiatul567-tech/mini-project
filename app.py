@@ -22,16 +22,16 @@ def how_it_works():
     return render_template("how_it_works.html")
 
 @app.route("/about")
-@app.route("/settings")
-def settings():
-    return render_template("settings.html")
-
 def about():
     return render_template("about.html")
 
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html")
 
 @app.route("/dashboard")
 def dashboard():
