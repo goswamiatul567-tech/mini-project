@@ -11,7 +11,7 @@
             --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
         
         /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; width: 100%; z-index: 10; }
@@ -22,8 +22,8 @@
         @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } .nav-links { gap: 15px; } }
 
         /* Hero Section */
-        .hero { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 80px 50px 20px 50px; position: relative; background-image: linear-gradient(to right, rgba(11, 14, 20, 0.95) 40%, rgba(11, 14, 20, 0.4)), url("/static/background.jpg"); background-size: cover; background-position: center; }
-        .hero::before { content: ''; position: absolute; top: -20%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%); z-index: -1; }
+        .hero { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 50px; position: relative; }
+        .hero-bg-image { position: absolute; top: 0; right: 0; width: 55%; height: 100%; background-image: url("/static/background.jpg"); background-size: cover; background-position: left center; opacity: 0.4; z-index: -1; mask-image: linear-gradient(to right, transparent, black 30%); -webkit-mask-image: linear-gradient(to right, transparent, black 30%); }
         
         .hero-container { display: flex; max-width: 1200px; width: 100%; justify-content: space-between; align-items: center; gap: 50px; }
         
@@ -72,6 +72,7 @@
     </nav>
 
     <section class="hero">
+        <div class="hero-bg-image"></div>
         <div class="hero-container">
             
             <!-- Left Side: Main Text -->
