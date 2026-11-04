@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Mid-Day Meal Monitoring</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .card { background: #ecf0f1; padding: 20px; border-radius: 8px; text-align: center; width: 45%; }
+        .card h2 { margin: 0; font-size: 36px; color: #2980b9; }
+        .controls { text-align: center; margin: 20px 0; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px; color: white; }
+        .btn-upload { background: #2980b9; }
+        .btn-live { background: #27ae60; }
+        .btn-stop { background: #c0392b; display: none; }
+        #videoFeed, #canvasFeed { width: 100%; max-width: 500px; display: none; border-radius: 5px; margin-top: 10px; }
+        img { max-width: 100%; border-radius: 5px; margin-top: 15px; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
+        th { background: #2c3e50; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Mid-Day Meal Monitoring</h1>
+        
+        <div class="controls">
+            <label for="fileInput" class="btn btn-upload">Upload Image</label>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            
+            <button id="startLiveBtn" class="btn btn-live">Start Live Camera</button>
+            <button id="stopLiveBtn" class="btn btn-stop">Stop & Save to Database</button>
+        </div>
+
+        <video id="videoFeed" autoplay playsinline></video>
+        <canvas id="canvasFeed" style="display:none;"></canvas>
+        <img id="resultImage" src="" alt="AI Result">
+
+        <div class="stats">
+            <div class="card">
+                <h2 id="studentCount">0</h2>
+                <p>Students Detected</p>
+            </div>
+            <div class="card">
+                <h2 id="plateCount">0</h2>
+                <p>Plates Detected</p>
+            </div>
+        </div>
+
+        <h3>Audit Ledger (Recent Records)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Students</th>
+                    <th>Plates</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in records %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td style="color: {% if 'ERROR' in row[5] %}red{% elif 'VERIFIED' in row[5] %}green{% else %}orange{% endif %}; font-weight: bold;">
+                        {{ row[5] }}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoFeed');
+        const canvas = document.getElementById('canvasFeed');
+        const startBtn = document.getElementById('startLiveBtn');
+        const stopBtn = document.getElementById('stopLiveBtn');
+        let liveInterval;
+
+        // 1. Handle Image Upload
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            video.style.display = 'none';
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/upload', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updateUI(data);
+                }
+            });
+        });
+
+        // 2. Handle Live Camera
+        startBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                document.getElementById('resultImage').style.display = 'none';
+
+                // Send a frame every 1.5 seconds
+                liveInterval = setInterval(() => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    
+                    canvas.toBlob(blob => {
+                        const formData = new FormData();
+                        formData.append('frame', blob, 'frame.jpg');
+                        
+                        fetch('/live_frame', { method: 'POST', body: formData })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                updateUI(data, true);
+                            }
+                        });
+                    }, 'image/jpeg');
+                }, 1500);
+
+            } catch (err) {
+                alert("Camera access denied or not available: " + err.message);
+            }
+        });
+
+        // 3. Stop Live Camera and Save
+        stopBtn.addEventListener('click', () => {
+            clearInterval(liveInterval);
+            video.srcObject.getTracks().forEach(track => track.stop());
+            video.style.display = 'none';
+            
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+
+            // Tell backend to save the final count
+            fetch('/finish_live', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    students: parseInt(document.getElementById('studentCount').innerText),
+                    plates: parseInt(document.getElementById('plateCount').innerText)
+                })
+            }).then(() => {
+                alert("Live session saved to database!");
+                window.location.reload();
+            });
+        });
+
+        // Helper to update UI
+        function updateUI(data, isLive = false) {
+            document.getElementById('studentCount').innerText = data.students;
+            document.getElementById('plateCount').innerText = data.plates;
+            
+            if (!isLive) {
+                const img = document.getElementById('resultImage');
+                img.src = data.image_url + "?t=" + new Date().getTime();
+                img.style.display = 'block';
+                
+                const statusBox = document.getElementById('statusBox');
+                if(statusBox) {
+                    statusBox.innerText = data.status;
+                    statusBox.style.display = 'block';
+                    statusBox.style.background = data.status.includes('ERROR') ? '#f8d7da' : (data.status.includes('VERIFIED') ? '#d4edda' : '#fff3cd');
+                    statusBox.style.color = data.status.includes('ERROR') ? '#721c24' : (data.status.includes('VERIFIED') ? '#155724' : '#856404');
+                }
+                setTimeout(() => { window.location.reload(); }, 3000);
+            } else {
+                // If live, show the processed frame from the server
+                const img = document.getElementById('resultImage');
+                img.src = data.image_url + "?t=" + new Date().getTime();
+                img.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
