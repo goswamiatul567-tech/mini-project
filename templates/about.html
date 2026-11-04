@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | MealTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Navbar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } }
+
+        /* Content */
+        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; flex: 1; }
+        
+        .section-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .section-card h1 { font-size: 32px; margin-bottom: 20px; color: var(--primary); }
+        .section-card h2 { font-size: 24px; margin-bottom: 15px; color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .section-card p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 15px; }
+        
+        .team-list { list-style: none; margin-top: 20px; }
+        .team-list li { font-size: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text-main); display: flex; justify-content: space-between; }
+        .team-list li span { color: var(--text-muted); font-family: monospace; font-size: 15px; }
+
+        .dev-highlight { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-top: 20px; }
+        .dev-highlight p { color: var(--text-main); margin-bottom: 10px; }
+        .dev-list { list-style: disc; margin-left: 20px; color: var(--text-muted); line-height: 1.8; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">🍲 MealTrack</a>
+        <div class="nav-links">
+            <a href="/">HOME</a>
+            <a href="/how-it-works">HOW IT WORKS</a>
+            <a href="/about" class="active">ABOUT</a>
+            <a href="mailto:contact@mealtrack.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- About the Project -->
+        <div class="section-card">
+            <h1>About the Project</h1>
+            <p>The Meal Monitoring System is an AI-powered solution designed to make school mid-day meal distribution more transparent, reliable and efficient. It uses smart cameras and artificial intelligence to monitor students receiving meals, count meal plates, and verify whether the food served matches the officially prescribed daily menu.</p>
+            <p>The system works completely offline, stores records locally, and automatically synchronizes data with the government dashboard whenever an internet connection becomes available.</p>
+            <p>Our goal is to ensure that every student receives their rightful meal and every meal is properly accounted for.</p>
+        </div>
+
+        <!-- Our Team -->
+        <div class="section-card">
+            <h2>Our Team</h2>
+            <p>This project is presented by a team of three members:</p>
+            <ul class="team-list">
+                <li>Atul Goswami <span>2500681540028</span></li>
+                <li>Arjun Singh Bisht <span>2500681540021</span></li>
+                <li>Aakarsh Rastogi <span>2500681540002</span></li>
+            </ul>
+        </div>
+
+        <!-- The Developer -->
+        <div class="section-card">
+            <h2>The Developer</h2>
+            <p style="font-size: 20px; font-weight: 600; color: white;">Atul Goswami</p>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 20px;">Lead Developer & Project Creator</p>
+            
+            <p>The entire project was independently designed and developed by Atul Goswami. He handled all major aspects of development, including:</p>
+            <ul class="dev-list">
+                <li>Project planning and system architecture.</li>
+                <li>AI model development and integration.</li>
+                <li>Student and meal plate detection.</li>
+                <li>Food verification functionality.</li>
+                <li>Backend and database development.</li>
+                <li>Website and dashboard development.</li>
+                <li>Testing, debugging and implementation.</li>
+            </ul>
+            <div class="dev-highlight">
+                <p>From the initial idea to the complete working prototype, Atul independently handled the technical development and implementation of the project.</p>
+                <p>This project represents his individual technical contribution, dedication and hard work, presented under the team's name.</p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

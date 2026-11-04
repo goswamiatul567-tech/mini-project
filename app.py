@@ -18,6 +18,10 @@ def landing():
     return render_template("index.html")
 
 @app.route("/how-it-works")
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 def how_it_works():
     return render_template("how_it_works.html")
 
