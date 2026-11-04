@@ -6,7 +6,6 @@ from utils.detector import process_frame
 from database.db import init_db, verify_and_save, get_records, sync_to_cloud
 
 app = Flask(__name__)
-
 init_db()
 UPLOAD_FOLDER = os.path.join("static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -21,6 +20,11 @@ def upload():
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
     
+    # Get the new form data
+    class_name = request.form.get("class_name", "Unknown")
+    section = request.form.get("section", "Unknown")
+    attendance = int(request.form.get("attendance", 0))
+    
     file = request.files["image"]
     npimg = np.frombuffer(file.read(), np.uint8)
     image = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
@@ -33,7 +37,7 @@ def upload():
     out_path = os.path.join(UPLOAD_FOLDER, "latest.jpg")
     cv2.imwrite(out_path, annotated_img)
     
-    status = verify_and_save(counts["students"], counts["plates"], 50)
+    status = verify_and_save(class_name, section, counts["students"], counts["plates"], attendance)
     
     return jsonify({
         "success": True,
@@ -45,7 +49,6 @@ def upload():
 
 @app.route("/live_frame", methods=["POST"])
 def live_frame():
-    """Receives a frame from the live camera and runs tracking."""
     if "frame" not in request.files:
         return jsonify({"error": "No frame"}), 400
     
@@ -53,10 +56,8 @@ def live_frame():
     npimg = np.frombuffer(file.read(), np.uint8)
     image = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     
-    # Run AI with is_live=True (Activates the Tracker!)
     counts, annotated_img = process_frame(image, is_live=True)
     
-    # Save the annotated frame just for the UI to see
     out_path = os.path.join(UPLOAD_FOLDER, "live.jpg")
     cv2.imwrite(out_path, annotated_img)
     
@@ -69,14 +70,16 @@ def live_frame():
 
 @app.route("/finish_live", methods=["POST"])
 def finish_live():
-    """Saves the final live tracking count to the database."""
     data = request.json
     students = data.get("students", 0)
     plates = data.get("plates", 0)
+    class_name = data.get("class_name", "Unknown")
+    section = data.get("section", "Unknown")
+    attendance = data.get("attendance", 0)
     
-    status = verify_and_save(students, plates, 50)
+    status = verify_and_save(class_name, section, students, plates, attendance)
     
-    # Reset the tracker for the next session
+    # Reset tracker
     from utils.tracker import tracker
     tracker.tracks.clear()
     tracker.next_id = 1
@@ -85,10 +88,8 @@ def finish_live():
 
 @app.route("/api/sync", methods=["POST"])
 def sync_offline():
-    success = sync_to_cloud()
-    if success:
-        return jsonify({"success": True, "message": "Synced!"})
-    return jsonify({"success": False}), 500
+    sync_to_cloud()
+    return jsonify({"success": True, "message": "Synced!"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

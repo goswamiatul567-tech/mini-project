@@ -7,238 +7,149 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0b0e14;
-            --bg-panel: #131824;
-            --bg-card: #1c2331;
-            --primary: #4f46e5;
-            --primary-hover: #6366f1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #2a3441;
+            --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331;
+            --primary: #4f46e5; --primary-hover: #6366f1;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
         /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background-color: var(--bg-panel);
-            border-right: 1px solid var(--border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        
+        .sidebar { width: 260px; background-color: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 30px; }
         .logo { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .logo-icon { width: 30px; height: 30px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        
         .nav-section { display: flex; flex-direction: column; gap: 5px; }
         .nav-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; padding-left: 10px; }
-        .nav-item { 
-            padding: 12px 15px; 
-            border-radius: 8px; 
-            color: var(--text-muted); 
-            text-decoration: none; 
-            font-size: 14px; 
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .nav-item { padding: 12px 15px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background-color: var(--primary); color: white; }
 
         /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        /* Top Navbar */
-        .topbar {
-            height: 70px;
-            background-color: var(--bg-panel);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-        }
-        .search-bar {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 8px 20px;
-            color: var(--text-muted);
-            width: 300px;
-            font-size: 13px;
-        }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .topbar { height: 70px; background-color: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .user-profile { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .sys-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 5px 10px; border-radius: 20px; font-weight: bold; }
         .dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
         /* Page Content */
         .page-content { padding: 30px; display: flex; flex-direction: column; gap: 25px; }
-        .page-title { font-size: 24px; font-weight: 600; margin-bottom: 5px; }
-        
-        /* Grid Layout */
         .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
         @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-        /* Panels */
         .panel { background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-title { font-size: 16px; font-weight: 600; }
+        .panel-title { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
 
         /* Media Box */
-        .media-box { 
-            width: 100%; 
-            min-height: 350px; 
-            background: var(--bg-card); 
-            border-radius: 8px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            position: relative;
-            border: 1px dashed var(--border);
-        }
+        .media-box { width: 100%; min-height: 350px; background: var(--bg-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; border: 1px dashed var(--border); }
         .media-box video, .media-box img { width: 100%; height: auto; display: none; object-fit: cover; }
         .media-box p { color: var(--text-muted); font-size: 14px; position: absolute; }
 
         /* Buttons */
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 13px; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px;
-            transition: 0.2s;
-        }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-outline:hover { background: var(--bg-card); }
         .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); display: none; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
         /* Stats */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
         .stat-title { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
-        .stat-value { font-size: 32px; font-weight: 700; color: var(--text-main); }
-        
+        .stat-value { font-size: 32px; font-weight: 700; }
+
         /* Table */
         .table-container { margin-top: 20px; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { text-align: left; padding: 12px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); }
-        tr:hover td { background-color: rgba(255, 255, 255, 0.02); }
-        
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+        /* Modal Setup */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-box { background: var(--bg-panel); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
+        .modal-box h2 { margin-bottom: 20px; font-size: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; color: white; font-family: inherit; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
     </style>
 </head>
 <body>
 
+    <!-- Setup Modal -->
+    <div class="modal-overlay" id="setupModal">
+        <div class="modal-box">
+            <h2>Session Setup</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Please enter the class details before starting the AI monitoring.</p>
+            
+            <div class="form-group">
+                <label>Class</label>
+                <input type="text" id="inputClass" placeholder="e.g., 5" required>
+            </div>
+            <div class="form-group">
+                <label>Section</label>
+                <input type="text" id="inputSection" placeholder="e.g., A" required>
+            </div>
+            <div class="form-group">
+                <label>Present Students (Attendance)</label>
+                <input type="number" id="inputAttendance" placeholder="e.g., 45" required>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="startSession()">Start Session</button>
+        </div>
+    </div>
+
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="logo">
-            <div class="logo-icon">🍲</div>
-            MealTrack
-        </div>
-        
+        <div class="logo"><div class="logo-icon">🍲</div>MealTrack</div>
         <div class="nav-section">
             <div class="nav-title">Pages</div>
             <a class="nav-item active">📊 Dashboard</a>
             <a class="nav-item">📹 Live Monitor</a>
             <a class="nav-item">📜 Audit Logs</a>
-            <a class="nav-item">⚙️ Settings</a>
-        </div>
-
-        <div class="nav-section" style="margin-top: auto;">
-            <div class="nav-title">System</div>
-            <a class="nav-item" onclick="syncData()">☁️ Sync to Cloud</a>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        
-        <!-- Topbar -->
         <div class="topbar">
-            <input type="text" class="search-bar" placeholder="Search records, students...">
+            <div style="font-weight: 600;" id="sessionInfo">Session Not Started</div>
             <div class="user-profile">
                 <div class="sys-status"><div class="dot"></div> System Online</div>
-                <div class="avatar">A</div>
             </div>
         </div>
 
-        <!-- Page Content -->
         <div class="page-content">
             <div>
-                <h1 class="page-title">Meal Monitoring Dashboard</h1>
-                <p style="color: var(--text-muted); font-size: 14px;">Real-time AI surveillance and meal verification.</p>
+                <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 5px;">Meal Monitoring Dashboard</h1>
             </div>
 
             <div class="dashboard-grid">
                 
                 <!-- Left: Camera Feed -->
                 <div class="panel">
-                    <div class="panel-header">
-                        <div class="panel-title">Surveillance Feed</div>
-                    </div>
-                    
+                    <div class="panel-title">Surveillance Feed</div>
                     <div class="media-box">
                         <p id="placeholderText">Camera Offline / No Image</p>
                         <video id="videoFeed" autoplay playsinline></video>
                         <canvas id="canvasFeed" style="display:none;"></canvas>
                         <img id="resultImage" src="" alt="AI Result">
                     </div>
-
                     <div class="btn-group">
-                        <label for="fileInput" class="btn btn-outline">📁 Upload Media</label>
+                        <label for="fileInput" class="btn btn-outline" id="uploadBtn" style="opacity: 0.5; pointer-events: none;">📁 Upload Media</label>
                         <input type="file" id="fileInput" accept="image/*" style="display:none;">
-                        
-                        <button id="startLiveBtn" class="btn btn-primary">🎥 Start Live Camera</button>
+                        <button id="startLiveBtn" class="btn btn-primary" style="opacity: 0.5; pointer-events: none;">🎥 Start Live Camera</button>
                         <button id="stopLiveBtn" class="btn btn-danger">⏹ Stop & Save</button>
                     </div>
                 </div>
 
                 <!-- Right: Stats & Logs -->
                 <div style="display: flex; flex-direction: column; gap: 25px;">
-                    
-                    <!-- Stats -->
                     <div class="panel">
-                        <div class="panel-header">
-                            <div class="panel-title">Live Telemetry</div>
-                        </div>
+                        <div class="panel-title">Live Telemetry</div>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-title">STUDENTS TRACKED</div>
@@ -252,19 +163,15 @@
                         <div id="statusBox" style="margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
                     </div>
 
-                    <!-- Logs -->
                     <div class="panel" style="flex: 1;">
-                        <div class="panel-header">
-                            <div class="panel-title">Recent Audit Logs</div>
-                            <a href="#" style="color: var(--primary); font-size: 12px; text-decoration: none;">View All</a>
-                        </div>
+                        <div class="panel-title">Recent Audit Logs</div>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Time</th>
-                                        <th>Stu</th>
-                                        <th>Pla</th>
+                                        <th>Class</th>
+                                        <th>Stu/Pla</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -272,15 +179,15 @@
                                     {% for row in records %}
                                     <tr>
                                         <td>{{ row[1][11:16] }}</td>
-                                        <td>{{ row[2] }}</td>
-                                        <td>{{ row[3] }}</td>
+                                        <td>{{ row[2] }}-{{ row[3] }}</td>
+                                        <td>{{ row[4] }} / {{ row[5] }}</td>
                                         <td>
-                                            {% if 'ERROR' in row[5] %}
-                                                <span class="badge badge-error">{{ row[5] }}</span>
-                                            {% elif 'VERIFIED' in row[5] %}
-                                                <span class="badge badge-success">{{ row[5] }}</span>
+                                            {% if 'ERROR' in row[7] %}
+                                                <span class="badge badge-error">{{ row[7] }}</span>
+                                            {% elif 'VERIFIED' in row[7] %}
+                                                <span class="badge badge-success">{{ row[7] }}</span>
                                             {% else %}
-                                                <span class="badge badge-warning">{{ row[5] }}</span>
+                                                <span class="badge badge-warning">{{ row[7] }}</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -291,7 +198,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -304,9 +210,36 @@
     const placeholder = document.getElementById('placeholderText');
     const startBtn = document.getElementById('startLiveBtn');
     const stopBtn = document.getElementById('stopLiveBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
     let liveInterval;
 
-    // Image Upload
+    // Session Variables
+    let currentClass = "";
+    let currentSection = "";
+    let currentAttendance = 0;
+
+    // 1. Start Session (Modal)
+    function startSession() {
+        currentClass = document.getElementById('inputClass').value;
+        currentSection = document.getElementById('inputSection').value;
+        currentAttendance = document.getElementById('inputAttendance').value;
+
+        if(!currentClass || !currentSection || !currentAttendance) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        document.getElementById('setupModal').style.display = 'none';
+        document.getElementById('sessionInfo').innerText = `Active Session: Class ${currentClass}-${currentSection} (Att: ${currentAttendance})`;
+        
+        // Enable buttons
+        startBtn.style.opacity = '1';
+        startBtn.style.pointerEvents = 'auto';
+        uploadBtn.style.opacity = '1';
+        uploadBtn.style.pointerEvents = 'auto';
+    }
+
+    // 2. Image Upload
     document.getElementById('fileInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -317,16 +250,18 @@
 
         const formData = new FormData();
         formData.append('image', file);
+        formData.append('class_name', currentClass);
+        formData.append('section', currentSection);
+        formData.append('attendance', currentAttendance);
 
         fetch('/upload', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
             if (data.success) updateUI(data);
-            else alert("Error: " + data.error);
         });
     });
 
-    // Live Camera
+    // 3. Live Camera
     startBtn.addEventListener('click', async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -353,10 +288,10 @@
                 }, 'image/jpeg');
             }, 1500);
 
-        } catch (err) { alert("Camera access denied: " + err.message); }
+        } catch (err) { alert("Camera denied: " + err.message); }
     });
 
-    // Stop Live
+    // 4. Stop Live
     stopBtn.addEventListener('click', () => {
         clearInterval(liveInterval);
         video.srcObject.getTracks().forEach(track => track.stop());
@@ -369,17 +304,13 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 students: parseInt(document.getElementById('studentCount').innerText),
-                plates: parseInt(document.getElementById('plateCount').innerText)
+                plates: parseInt(document.getElementById('plateCount').innerText),
+                class_name: currentClass,
+                section: currentSection,
+                attendance: currentAttendance
             })
         }).then(() => window.location.reload());
     });
-
-    // Sync Data
-    function syncData() {
-        fetch('/api/sync', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => { alert(data.message); window.location.reload(); });
-    }
 
     // UI Update
     function updateUI(data, isLive = false) {
