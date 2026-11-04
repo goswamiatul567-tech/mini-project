@@ -6,33 +6,53 @@
     <title>How It Works | MealTrack</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --success: #10b981; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --primary-hover: #6366f1; --success: #10b981; --danger: #ef4444; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 50px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); position: sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); z-index: 100; }
         .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
         .nav-links { display: flex; gap: 30px; }
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: white; }
-        @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } }
 
-        /* Presentation Layout */
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .slide { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeIn 0.5s ease-in-out; }
+        /* Presentation Container */
+        .presentation-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; position: relative; }
         
-        .slide-number { font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        .slide h2 { font-size: 28px; margin-bottom: 20px; color: white; }
-        .slide p { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
+        /* Slide Box */
+        .slide-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 50px; width: 100%; max-width: 800px; min-height: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; animation: fadeIn 0.4s ease-in-out; }
+        .slide-box.active { display: block; }
         
-        .highlight-box { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
-        .highlight-box p { color: var(--text-main); margin: 0; font-weight: 500; }
+        .slide-number { font-size: 13px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .slide-box h2 { font-size: 32px; margin-bottom: 20px; color: white; }
+        .slide-box p { font-size: 18px; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
+        .slide-box ul { font-size: 18px; color: var(--text-muted); line-height: 1.7; margin-left: 20px; margin-bottom: 15px; }
+        
+        .highlight-box { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin: 25px 0; }
+        .highlight-box p { color: var(--text-main); margin: 0; font-weight: 500; font-size: 18px; }
 
-        .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-        .tech-tag { background: var(--bg-card); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); }
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 25px; }
+        .tech-tag { background: var(--bg-card); padding: 10px 20px; border-radius: 20px; font-size: 15px; font-weight: 600; border: 1px solid var(--border); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Controls */
+        .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 800px; margin-top: 30px; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn:hover { background: var(--primary-hover); }
+        .btn:disabled { background: var(--bg-card); color: var(--text-muted); cursor: not-allowed; }
+        
+        .slide-indicator { font-size: 16px; font-weight: 600; color: var(--text-muted); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) { 
+            .navbar { padding: 20px; flex-direction: column; gap: 15px; } 
+            .slide-box { padding: 30px; min-height: 350px; }
+            .slide-box h2 { font-size: 24px; }
+            .slide-box p, .slide-box ul { font-size: 15px; }
+            .controls { flex-direction: column; gap: 15px; }
+            .btn { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -42,19 +62,18 @@
         <div class="nav-links">
             <a href="/">HOME</a>
             <a href="/how-it-works" class="active">HOW IT WORKS</a>
-            <a href="#about">ABOUT</a>
             <a href="mailto:contact@mealtrack.com">CONTACT</a>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="presentation-container">
         
         <!-- Slide 1 -->
-        <div class="slide">
-            <div class="slide-number">Slide 01</div>
+        <div class="slide-box active" id="slide-1">
+            <div class="slide-number">Slide 01 / 06</div>
             <h2>The Problem: Corruption & Wastage</h2>
             <p>In the traditional Mid-Day Meal system, monitoring relies on manual paper records. This leads to critical issues:</p>
-            <ul style="color: var(--text-muted); line-height: 1.8; margin-left: 20px;">
+            <ul>
                 <li><strong>Ghost Beneficiaries:</strong> Fake attendance records lead to funds being stolen.</li>
                 <li><strong>Food Wastage:</strong> Inaccurate headcounts result in food shortages or excess waste.</li>
                 <li><strong>No Verification:</strong> Authorities have no way to prove if a meal was actually served.</li>
@@ -62,8 +81,8 @@
         </div>
 
         <!-- Slide 2 -->
-        <div class="slide">
-            <div class="slide-number">Slide 02</div>
+        <div class="slide-box" id="slide-2">
+            <div class="slide-number">Slide 02 / 06</div>
             <h2>Our Solution: AI Vision</h2>
             <p>We replace manual counting with real-time Artificial Intelligence.</p>
             <div class="highlight-box">
@@ -72,35 +91,35 @@
         </div>
 
         <!-- Slide 3 -->
-        <div class="slide">
-            <div class="slide-number">Slide 03</div>
+        <div class="slide-box" id="slide-3">
+            <div class="slide-number">Slide 03 / 06</div>
             <h2>No Double Counting (Tracking)</h2>
             <p>A student might stand in the camera frame for 10 seconds. If we count every frame, one student becomes ten.</p>
             <p>To solve this, we integrated a <strong>ByteTrack-style tracking algorithm</strong>. Every student is assigned a unique ID (e.g., Student #1, #2, #3). Even as they move, the AI remembers them and only counts them once.</p>
         </div>
 
         <!-- Slide 4 -->
-        <div class="slide">
-            <div class="slide-number">Slide 04</div>
+        <div class="slide-box" id="slide-4">
+            <div class="slide-number">Slide 04 / 06</div>
             <h2>Human-in-the-Loop Verification</h2>
             <p>We believe AI should assist humans, not replace them blindly.</p>
             <p>When the AI detects the students and plates, it does <strong>not</strong> save automatically. The operator (teacher) must review the visual count on the dashboard and click <strong>"Confirm & Save"</strong>. This prevents false detections from ruining the database.</p>
         </div>
 
         <!-- Slide 5 -->
-        <div class="slide">
-            <div class="slide-number">Slide 05</div>
+        <div class="slide-box" id="slide-5">
+            <div class="slide-number">Slide 05 / 06</div>
             <h2>The Integrity Check</h2>
             <p>Once saved, the system acts as an auditor. It compares three numbers:</p>
             <div class="highlight-box">
                 <p>1. Official Attendance <br> 2. AI Student Count <br> 3. AI Plate Count</p>
             </div>
-            <p>If the AI sees 45 students but only 40 plates, the dashboard instantly flags an <strong style="color: #ef4444;">ERROR: 5 students missing meals</strong>, alerting the principal immediately.</p>
+            <p>If the AI sees 45 students but only 40 plates, the dashboard instantly flags an <strong style="color: var(--danger);">ERROR: 5 students missing meals</strong>, alerting the principal immediately.</p>
         </div>
 
         <!-- Slide 6 -->
-        <div class="slide">
-            <div class="slide-number">Slide 06</div>
+        <div class="slide-box" id="slide-6">
+            <div class="slide-number">Slide 06 / 06</div>
             <h2>Technology Stack</h2>
             <p>Built using modern, high-performance open-source technologies:</p>
             <div class="tech-grid">
@@ -113,7 +132,34 @@
             </div>
         </div>
 
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Previous</button>
+            <div class="slide-indicator" id="indicator">1 / 6</div>
+            <button class="btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+
     </div>
 
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        function changeSlide(direction) {
+            // Hide current slide
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+            
+            // Update current slide number
+            currentSlide += direction;
+            
+            // Show new slide
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            
+            // Update buttons and indicator
+            document.getElementById('indicator').innerText = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+    </script>
 </body>
 </html>
