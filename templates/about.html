@@ -6,33 +6,71 @@
     <title>About | MEAL MONITORING SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; --primary: #4f46e5; --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; }
+        :root { 
+            --bg-dark: #0b0e14; --bg-panel: #131824; --bg-card: #1c2331; 
+            --primary: #4f46e5; --primary-light: #818cf8; --success: #10b981; 
+            --text-main: #f8fafc; --text-muted: #94a3b8; --border: #2a3441; 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); z-index: 100; }
-        .logo { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid var(--border); background: var(--bg-dark); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
         .nav-links { display: flex; gap: 30px; }
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: white; }
-        @media (max-width: 768px) { .navbar { padding: 20px; flex-direction: column; gap: 15px; } }
-
-        /* Content */
-        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; flex: 1; }
         
-        .section-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .section-card h1 { font-size: 32px; margin-bottom: 20px; color: var(--primary); }
-        .section-card h2 { font-size: 24px; margin-bottom: 15px; color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .section-card p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 15px; }
-        
-        .team-list { list-style: none; margin-top: 20px; }
-        .team-list li { font-size: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text-main); display: flex; justify-content: space-between; }
-        .team-list li span { color: var(--text-muted); font-family: monospace; font-size: 15px; }
+        /* Hero Banner */
+        .hero-banner { background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(11, 14, 20, 1) 100%), url('/static/background.jpg'); background-size: cover; background-position: center; padding: 80px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+        .hero-banner h1 { font-size: 42px; font-weight: 800; margin-bottom: 15px; }
+        .hero-banner p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
 
-        .dev-highlight { background: rgba(79, 70, 229, 0.1); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-top: 20px; }
-        .dev-highlight p { color: var(--text-main); margin-bottom: 10px; }
-        .dev-list { list-style: disc; margin-left: 20px; color: var(--text-muted); line-height: 1.8; }
+        /* Main Layout */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; flex: 1; }
+        
+        /* Sections */
+        .section { margin-bottom: 60px; opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .section-title { font-size: 28px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .section-title span { font-size: 14px; background: rgba(79, 70, 229, 0.2); color: var(--primary-light); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--primary); }
+        
+        .card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 15px; }
+        .card p:last-child { margin-bottom: 0; }
+
+        /* Tech Stack Badges */
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .tech-badge { background: var(--bg-card); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+
+        /* Team Cards */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .team-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 25px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .team-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2); }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .team-card h3 { font-size: 20px; color: white; margin-bottom: 5px; }
+        .team-card .role { color: var(--primary-light); font-size: 14px; font-weight: 600; margin-bottom: 15px; }
+        .team-card .links { display: flex; justify-content: center; gap: 15px; margin-top: 15px; }
+        .team-card .links a { color: var(--text-muted); text-decoration: none; font-size: 13px; border: 1px solid var(--border); padding: 5px 12px; border-radius: 6px; transition: 0.2s; }
+        .team-card .links a:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Developer Highlight */
+        .dev-card { background: linear-gradient(135deg, rgba(19, 24, 36, 1) 0%, rgba(79, 70, 229, 0.1) 100%); border: 1px solid var(--primary); }
+        .dev-list { list-style: none; margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .dev-list li { color: var(--text-muted); font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .dev-list li::before { content: '✓'; color: var(--success); font-weight: bold; }
+
+        /* Back to Top */
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 20px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; }
+        .back-to-top.show { opacity: 1; pointer-events: auto; }
+        .back-to-top:hover { transform: translateY(-5px); background: var(--primary-light); }
+
+        @media (max-width: 768px) { 
+            .navbar { padding: 20px; flex-direction: column; gap: 15px; } 
+            .hero-banner h1 { font-size: 32px; }
+            .dev-list { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -47,50 +85,139 @@
         </div>
     </nav>
 
+    <div class="hero-banner">
+        <h1>About The Project</h1>
+        <p>An AI-powered solution for transparent and accountable mid-day meal distribution.</p>
+    </div>
+
     <div class="container">
         
-        <!-- About the Project -->
-        <div class="section-card">
-            <h1>About the Project</h1>
-            <p>The Meal Monitoring System is an AI-powered solution designed to make school mid-day meal distribution more transparent, reliable and efficient. It uses smart cameras and artificial intelligence to monitor students receiving meals, count meal plates, and verify whether the food served matches the officially prescribed daily menu.</p>
-            <p>The system works completely offline, stores records locally, and automatically synchronizes data with the government dashboard whenever an internet connection becomes available.</p>
-            <p>Our goal is to ensure that every student receives their rightful meal and every meal is properly accounted for.</p>
+        <!-- Problem Statement -->
+        <div class="section">
+            <h2 class="section-title">The Problem We Are Solving</h2>
+            <div class="card">
+                <p>The Mid-Day Meal Scheme is the world's largest school feeding program, serving over 118 million children in India. However, the system faces severe challenges: fake attendance records, food wastage, and a critical lack of real-time monitoring.</p>
+                <p>Without a transparent verification system, it is impossible to guarantee that every allocated meal actually reaches a student. Our project aims to bridge this gap using AI.</p>
+            </div>
         </div>
 
-        <!-- Our Team -->
-        <div class="section-card">
-            <h2>Our Team</h2>
-            <p>This project is presented by a team of three members:</p>
-            <ul class="team-list">
-                <li>Atul Goswami <span>2500681540028</span></li>
-                <li>Arjun Singh Bisht <span>2500681540021</span></li>
-                <li>Aakarsh Rastogi <span>2500681540002</span></li>
-            </ul>
+        <!-- Our Solution & Tech Stack -->
+        <div class="section">
+            <h2 class="section-title">Our Solution</h2>
+            <div class="card">
+                <p>The Meal Monitoring System uses smart cameras and Computer Vision (YOLOv8) to detect students and food plates. It features a human-in-the-loop verification dashboard, ensures students aren't double-counted using tracking algorithms, and operates entirely offline, syncing data when the internet returns.</p>
+                
+                <h4 style="margin-top: 25px; margin-bottom: 10px; color: white;">Technology Stack</h4>
+                <div class="tech-grid">
+                    <div class="tech-badge">🐍 Python</div>
+                    <div class="tech-badge">🔥 Flask</div>
+                    <div class="tech-badge">👁️ YOLOv8 (ONNX)</div>
+                    <div class="tech-badge">📸 OpenCV</div>
+                    <div class="tech-badge">🗄️ SQLite</div>
+                    <div class="tech-badge">🌐 HTML/CSS/JS</div>
+                    <div class="tech-badge">☁️ Render</div>
+                </div>
+            </div>
         </div>
 
-        <!-- The Developer -->
-        <div class="section-card">
-            <h2>The Developer</h2>
-            <p style="font-size: 20px; font-weight: 600; color: white;">Atul Goswami</p>
-            <p style="color: var(--primary); font-weight: 600; margin-bottom: 20px;">Lead Developer & Project Creator</p>
-            
-            <p>The entire project was independently designed and developed by Atul Goswami. He handled all major aspects of development, including:</p>
-            <ul class="dev-list">
-                <li>Project planning and system architecture.</li>
-                <li>AI model development and integration.</li>
-                <li>Student and meal plate detection.</li>
-                <li>Food verification functionality.</li>
-                <li>Backend and database development.</li>
-                <li>Website and dashboard development.</li>
-                <li>Testing, debugging and implementation.</li>
-            </ul>
-            <div class="dev-highlight">
-                <p>From the initial idea to the complete working prototype, Atul independently handled the technical development and implementation of the project.</p>
-                <p>This project represents his individual technical contribution, dedication and hard work, presented under the team's name.</p>
+        <!-- The Team -->
+        <div class="section">
+            <h2 class="section-title">Meet The Team <span>NextGen</span></h2>
+            <div class="team-grid">
+                
+                <div class="team-card">
+                    <div class="avatar">AG</div>
+                    <h3>Atul Goswami</h3>
+                    <div class="role">Lead Developer & AI Engineer</div>
+                    <p style="font-size: 13px; color: var(--text-muted);">Architected the system, trained the YOLO models, and built the complete full-stack web application.</p>
+                    <div class="links">
+                        <a href="https://github.com/goswamiatul567-tech" target="_blank">GitHub</a>
+                        <a href="mailto:atul.goswami.cseds.2025@miet.ac.in">Email</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar" style="background: linear-gradient(135deg, #10b981, #059669);">AB</div>
+                    <h3>Arjun Singh Bisht</h3>
+                    <div class="role">Research & Data Analyst</div>
+                    <p style="font-size: 13px; color: var(--text-muted);">Conducted field research, analyzed meal distribution data, and assisted in defining project requirements.</p>
+                    <div class="links">
+                        <a href="#">LinkedIn</a>
+                        <a href="#">GitHub</a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">AR</div>
+                    <h3>Aakarsh Rastogi</h3>
+                    <div class="role">QA & Frontend Testing</div>
+                    <p style="font-size: 13px; color: var(--text-muted);">Responsible for UI/UX validation, system testing, edge-case documentation, and presentation design.</p>
+                    <div class="links">
+                        <a href="#">LinkedIn</a>
+                        <a href="#">GitHub</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Guided By / Mentor -->
+        <div class="section">
+            <h2 class="section-title">Guided By</h2>
+            <div class="card" style="text-align: center;">
+                <p style="font-size: 18px; color: white; font-weight: 600; margin-bottom: 5px;">Faculty Mentor</p>
+                <p style="color: var(--primary-light);">Department of CSE – Data Science</p>
+                <p style="font-size: 14px;">Meerut Institute of Engineering and Technology (MIET)</p>
+            </div>
+        </div>
+
+        <!-- Core Development -->
+        <div class="section">
+            <h2 class="section-title">Core Development</h2>
+            <div class="card dev-card">
+                <p style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 5px;">Atul Goswami</p>
+                <p style="color: var(--primary-light); font-weight: 600; margin-bottom: 20px;">Lead Developer & Project Creator</p>
+                
+                <p>While this project is presented under the team name "NextGen", the entire technical architecture, AI model integration, backend, and frontend development were independently handled by Atul Goswami.</p>
+                <ul class="dev-list">
+                    <li>System Architecture & Planning</li>
+                    <li>YOLOv8 AI Integration</li>
+                    <li>ByteTrack Implementation</li>
+                    <li>Backend & Database (SQLite)</li>
+                    <li>Full-Stack Web Development</li>
+                    <li>Cloud Deployment (Render)</li>
+                </ul>
+                <p style="margin-top: 20px;">From the initial idea to the working prototype, this project represents his individual technical contribution, dedication, and hard work.</p>
             </div>
         </div>
 
     </div>
 
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <script>
+        // Scroll Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach((section) => {
+            observer.observe(section);
+        });
+
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
