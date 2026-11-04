@@ -5,187 +5,282 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Mid-Day Meal Monitoring</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; }
-        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
-        .card { background: #ecf0f1; padding: 20px; border-radius: 8px; text-align: center; width: 45%; }
-        .card h2 { margin: 0; font-size: 36px; color: #2980b9; }
-        .controls { text-align: center; margin: 20px 0; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px; color: white; }
-        .btn-upload { background: #2980b9; }
-        .btn-live { background: #27ae60; }
-        .btn-stop { background: #c0392b; display: none; }
-        #videoFeed, #canvasFeed { width: 100%; max-width: 500px; display: none; border-radius: 5px; margin-top: 10px; }
-        img { max-width: 100%; border-radius: 5px; margin-top: 15px; display: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
-        th { background: #2c3e50; color: white; }
+        :root {
+            --primary: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e2e8f0; margin: 0; padding: 20px; color: #334155; }
+        
+        /* Header */
+        .header { background: var(--dark); color: white; padding: 15px 30px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0 0; font-size: 13px; color: #cbd5e1; }
+        .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: var(--success); }
+        .dot { width: 10px; height: 10px; background-color: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Main Layout */
+        .container { max-width: 1100px; margin: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: var(--dark); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        
+        /* Buttons */
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: var(--danger); color: white; display: none; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-outline { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
+        .btn-outline:hover { background: var(--dark); color: white; }
+
+        /* Media Area */
+        .media-box { width: 100%; min-height: 300px; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .media-box video, .media-box img { width: 100%; height: auto; display: none; }
+        .media-box p { color: #64748b; position: absolute; font-size: 14px; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .stat-box { background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid var(--primary); }
+        .stat-box h2 { margin: 0; font-size: 32px; color: var(--dark); }
+        .stat-box p { margin: 5px 0 0 0; font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 11px; }
+        tr:hover { background-color: #f8fafc; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .badge-error { background: #fee2e2; color: #991b1b; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Smart Mid-Day Meal Monitoring</h1>
-        
-        <div class="controls">
-            <label for="fileInput" class="btn btn-upload">Upload Image</label>
-            <input type="file" id="fileInput" accept="image/*" style="display:none;">
-            
-            <button id="startLiveBtn" class="btn btn-live">Start Live Camera</button>
-            <button id="stopLiveBtn" class="btn btn-stop">Stop & Save to Database</button>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Smart Mid-Day Meal Monitoring System</h1>
+            <p>AI-Powered Transparency & Accountability</p>
         </div>
-
-        <video id="videoFeed" autoplay playsinline></video>
-        <canvas id="canvasFeed" style="display:none;"></canvas>
-        <img id="resultImage" src="" alt="AI Result">
-
-        <div class="stats">
-            <div class="card">
-                <h2 id="studentCount">0</h2>
-                <p>Students Detected</p>
-            </div>
-            <div class="card">
-                <h2 id="plateCount">0</h2>
-                <p>Plates Detected</p>
-            </div>
+        <div class="status-indicator">
+            <div class="dot"></div> SYSTEM ONLINE
         </div>
-
-        <h3>Audit Ledger (Recent Records)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Students</th>
-                    <th>Plates</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in records %}
-                <tr>
-                    <td>{{ row[1] }}</td>
-                    <td>{{ row[2] }}</td>
-                    <td>{{ row[3] }}</td>
-                    <td style="color: {% if 'ERROR' in row[5] %}red{% elif 'VERIFIED' in row[5] %}green{% else %}orange{% endif %}; font-weight: bold;">
-                        {{ row[5] }}
-                    </td>
-                </tr>
-                {% else %}
-                <tr><td colspan="4">No records found.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 
-    <script>
-        const video = document.getElementById('videoFeed');
-        const canvas = document.getElementById('canvasFeed');
-        const startBtn = document.getElementById('startLiveBtn');
-        const stopBtn = document.getElementById('stopLiveBtn');
-        let liveInterval;
+    <div class="grid">
+        <!-- Left Column: Media & Controls -->
+        <div class="card">
+            <h3>Surveillance Feed</h3>
+            <div class="media-box">
+                <p id="placeholderText">Camera Offline / No Image</p>
+                <video id="videoFeed" autoplay playsinline></video>
+                <canvas id="canvasFeed" style="display:none;"></canvas>
+                <img id="resultImage" src="" alt="AI Result">
+            </div>
 
-        // 1. Handle Image Upload
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            video.style.display = 'none';
-            const formData = new FormData();
-            formData.append('image', file);
-
-            fetch('/upload', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    updateUI(data);
-                }
-            });
-        });
-
-        // 2. Handle Live Camera
-        startBtn.addEventListener('click', async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                video.srcObject = stream;
-                video.style.display = 'block';
+            <div class="btn-group" style="margin-top: 15px;">
+                <label for="fileInput" class="btn btn-outline">📁 Upload Image</label>
+                <input type="file" id="fileInput" accept="image/*" style="display:none;">
                 
-                startBtn.style.display = 'none';
-                stopBtn.style.display = 'inline-block';
-                document.getElementById('resultImage').style.display = 'none';
+                <button id="startLiveBtn" class="btn btn-primary">🎥 Start Live Camera</button>
+                <button id="stopLiveBtn" class="btn btn-danger">⏹ Stop & Save</button>
+            </div>
+        </div>
 
-                // Send a frame every 1.5 seconds
-                liveInterval = setInterval(() => {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    canvas.getContext('2d').drawImage(video, 0, 0);
-                    
-                    canvas.toBlob(blob => {
-                        const formData = new FormData();
-                        formData.append('frame', blob, 'frame.jpg');
-                        
-                        fetch('/live_frame', { method: 'POST', body: formData })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                updateUI(data, true);
-                            }
-                        });
-                    }, 'image/jpeg');
-                }, 1500);
+        <!-- Right Column: Stats & Logs -->
+        <div class="card">
+            <h3>Real-Time Telemetry</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <h2 id="studentCount">0</h2>
+                    <p>Students Tracked</p>
+                </div>
+                <div class="stat-box" style="border-left-color: var(--success);">
+                    <h2 id="plateCount">0</h2>
+                    <p>Plates Detected</p>
+                </div>
+            </div>
 
-            } catch (err) {
-                alert("Camera access denied or not available: " + err.message);
-            }
-        });
+            <div id="statusBox" style="text-align: center; padding: 15px; margin-top: 20px; border-radius: 8px; font-weight: bold; display: none;"></div>
 
-        // 3. Stop Live Camera and Save
-        stopBtn.addEventListener('click', () => {
-            clearInterval(liveInterval);
-            video.srcObject.getTracks().forEach(track => track.stop());
-            video.style.display = 'none';
+            <h3 style="margin-top: 25px;">Audit Ledger</h3>
+            <div style="max-height: 200px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Stu</th>
+                            <th>Plate</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in records %}
+                        <tr>
+                            <td>{{ row[1][11:16] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>
+                                {% if 'ERROR' in row[5] %}
+                                    <span class="badge badge-error">{{ row[5] }}</span>
+                                {% elif 'VERIFIED' in row[5] %}
+                                    <span class="badge badge-success">{{ row[5] }}</span>
+                                {% else %}
+                                    <span class="badge badge-warning">{{ row[5] }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" style="text-align:center;">No records yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             
-            startBtn.style.display = 'inline-block';
-            stopBtn.style.display = 'none';
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="btn btn-outline" onclick="syncData()" style="width: 100%;">☁️ Sync Offline Data</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Tell backend to save the final count
-            fetch('/finish_live', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    students: parseInt(document.getElementById('studentCount').innerText),
-                    plates: parseInt(document.getElementById('plateCount').innerText)
-                })
-            }).then(() => {
-                alert("Live session saved to database!");
-                window.location.reload();
-            });
-        });
+<script>
+    const video = document.getElementById('videoFeed');
+    const canvas = document.getElementById('canvasFeed');
+    const resultImage = document.getElementById('resultImage');
+    const placeholder = document.getElementById('placeholderText');
+    const startBtn = document.getElementById('startLiveBtn');
+    const stopBtn = document.getElementById('stopLiveBtn');
+    let liveInterval;
 
-        // Helper to update UI
-        function updateUI(data, isLive = false) {
-            document.getElementById('studentCount').innerText = data.students;
-            document.getElementById('plateCount').innerText = data.plates;
-            
-            if (!isLive) {
-                const img = document.getElementById('resultImage');
-                img.src = data.image_url + "?t=" + new Date().getTime();
-                img.style.display = 'block';
-                
-                const statusBox = document.getElementById('statusBox');
-                if(statusBox) {
-                    statusBox.innerText = data.status;
-                    statusBox.style.display = 'block';
-                    statusBox.style.background = data.status.includes('ERROR') ? '#f8d7da' : (data.status.includes('VERIFIED') ? '#d4edda' : '#fff3cd');
-                    statusBox.style.color = data.status.includes('ERROR') ? '#721c24' : (data.status.includes('VERIFIED') ? '#155724' : '#856404');
-                }
-                setTimeout(() => { window.location.reload(); }, 3000);
+    // 1. Image Upload
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        video.style.display = 'none';
+        placeholder.style.display = 'none';
+        resultImage.style.display = 'none';
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch('/upload', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                updateUI(data);
             } else {
-                // If live, show the processed frame from the server
-                const img = document.getElementById('resultImage');
-                img.src = data.image_url + "?t=" + new Date().getTime();
-                img.style.display = 'block';
+                alert("Error: " + data.error);
             }
+        });
+    });
+
+    // 2. Live Camera
+    startBtn.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            video.srcObject = stream;
+            video.style.display = 'block';
+            placeholder.style.display = 'none';
+            resultImage.style.display = 'none';
+            
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+
+            liveInterval = setInterval(() => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                canvas.toBlob(blob => {
+                    const formData = new FormData();
+                    formData.append('frame', blob, 'frame.jpg');
+                    
+                    fetch('/live_frame', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) updateUI(data, true);
+                    });
+                }, 'image/jpeg');
+            }, 1500);
+
+        } catch (err) {
+            alert("Camera access denied: " + err.message);
         }
-    </script>
+    });
+
+    // 3. Stop Live
+    stopBtn.addEventListener('click', () => {
+        clearInterval(liveInterval);
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.style.display = 'none';
+        startBtn.style.display = 'inline-block';
+        stopBtn.style.display = 'none';
+
+        fetch('/finish_live', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                students: parseInt(document.getElementById('studentCount').innerText),
+                plates: parseInt(document.getElementById('plateCount').innerText)
+            })
+        }).then(() => {
+            window.location.reload();
+        });
+    });
+
+    // 4. Sync Data
+    function syncData() {
+        fetch('/api/sync', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            window.location.reload();
+        });
+    }
+
+    // Update UI Helper
+    function updateUI(data, isLive = false) {
+        document.getElementById('studentCount').innerText = data.students;
+        document.getElementById('plateCount').innerText = data.plates;
+        
+        if (!isLive) {
+            resultImage.src = data.image_url + "?t=" + new Date().getTime();
+            resultImage.style.display = 'block';
+            
+            const statusBox = document.getElementById('statusBox');
+            statusBox.innerText = data.status;
+            statusBox.style.display = 'block';
+            
+            if(data.status.includes('ERROR')) {
+                statusBox.style.background = '#fee2e2';
+                statusBox.style.color = '#991b1b';
+            } else if(data.status.includes('VERIFIED')) {
+                statusBox.style.background = '#d1fae5';
+                statusBox.style.color = '#065f46';
+            } else {
+                statusBox.style.background = '#fef3c7';
+                statusBox.style.color = '#92400e';
+            }
+            setTimeout(() => { window.location.reload(); }, 3000);
+        } else {
+            resultImage.src = data.image_url + "?t=" + new Date().getTime();
+            resultImage.style.display = 'block';
+        }
+    }
+</script>
 </body>
 </html>
