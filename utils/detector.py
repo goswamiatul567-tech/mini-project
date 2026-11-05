@@ -65,7 +65,8 @@ def process_frame(image, is_live=False):
     person_dets = parse_output(person_out, True)
     if is_live:
         person_dets = tracker.update(person_dets)
-        total_unique_students = tracker.get_total_unique_count()
+        # Show how many people are currently being tracked (active + recently lost)
+        total_unique_students = len(tracker.tracks)
     else:
         total_unique_students = len(person_dets)
 
